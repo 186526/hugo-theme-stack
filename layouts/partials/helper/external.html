@@ -2,6 +2,18 @@
 {{- with $List -}}
     {{- range . -}}
         {{- if eq .type "script" -}}
+         {{- if eq .src "local" -}}
+         {{ $vibrantJS := resources.Get "lib/vibrant.js" | resources.ExecuteAsTemplate "lib/vibrant.js" . | minify }}
+            <script 
+                src="{{ $vibrantJS.RelPermalink }}"
+                {{- with .integrity -}}
+                integrity="{{ . }}"
+                {{- end -}}
+                crossorigin="anonymous"
+                {{ if .defer }}defer{{ end }}
+                >
+            </script>
+            {{- else -}}
             <script 
                 src="{{ .src }}"
                 {{- with .integrity -}}
@@ -11,6 +23,7 @@
                 {{ if .defer }}defer{{ end }}
                 >
             </script>
+        {{- end -}}
         {{- else if eq .type "style" -}}
             <link 
                 rel="stylesheet" 
