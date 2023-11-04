@@ -1,0 +1,3 @@
+{{ $QuicklinkJS := resources.Get "lib/quicklink.js" | resources.ExecuteAsTemplate "lib/quicklink.js" . | minify }}
+
+<script src="{{ $QuicklinkJS.RelPermalink }}"></script>
