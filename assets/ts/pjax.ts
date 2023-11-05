@@ -30,7 +30,10 @@ export default class Pjax {
             {
                 areas: [
                     'body'
-                ]
+                ],
+                fallback:(target: HTMLAnchorElement | HTMLAreaElement | HTMLFormElement | Window, reason: unknown)=>{
+                    throw reason;
+                }
             }
         );
         window.addEventListener('pjax:load', () => {
