@@ -12,9 +12,10 @@ import createElement from 'ts/createElement';
 import StackColorScheme from 'ts/colorScheme';
 import { setupScrollspy } from 'ts/scrollspy';
 import { setupSmoothAnchors } from "ts/smoothAnchors";
+import Pjax from "ts/pjax";
 
 let Stack = {
-    init: () => {
+    reset: () => {
         /**
          * Bind menu event
          */
@@ -92,6 +93,10 @@ let Stack = {
         });
 
         new StackColorScheme(document.getElementById('dark-mode-toggle'));
+    },
+    init: () => {
+        Stack.reset();
+        new Pjax();
     }
 }
 

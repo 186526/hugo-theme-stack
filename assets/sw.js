@@ -10,8 +10,6 @@ const { ExpirationPlugin } = expiration;
 const { CacheableResponsePlugin } = cacheableResponse;
 
 const cacheSuffixVersion = '-231105a',
-    // precacheCacheName = core.cacheNames.precache,
-    // runtimeCacheName = core.cacheNames.runtime,
     maxEntries = 100;
 
 self.addEventListener('activate', (event) => {
@@ -28,7 +26,7 @@ self.addEventListener('activate', (event) => {
 
 
 core.setCacheNameDetails({
-    prefix: '186blog',
+    prefix: 'blogatreal186526',
     suffix: cacheSuffixVersion
 });
 

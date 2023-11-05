@@ -18,6 +18,8 @@
                 {{ with $disqusjs.Admin }}admin: {{ . }},{{ end }}
                 {{ with $disqusjs.AdminLabel }}adminLabel: {{ . }}{{ end }}
             });
+            disqusjs.render(document.getElementById('disqus_thread'));
+            window.addEventListener("pjax:fetch", () => { disqusjs.destroy() }, {once:true});
         }
 
         function lazyLoadDisqusJS() {
@@ -27,7 +29,7 @@
             }
 
             let d = document.createElement('script');
-            d.src = 'https://lib.baomitu.com/disqusjs/1.3.0/disqus.min.js';
+            d.src = 'https://lib.baomitu.com/disqusjs/3.0.2/disqusjs.es2015.umd.min.js';
             d.async = false;
             document.body.appendChild(d);
             d.onload = () => {

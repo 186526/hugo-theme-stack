@@ -2,7 +2,7 @@
 {{- with $List -}}
     {{- range . -}}
         {{- if eq .type "script" -}}
-         {{- if eq .src "local" -}}
+         {{- if eq .src "local-vibrant" -}}
          {{ $vibrantJS := resources.Get "lib/vibrant.js" | resources.ExecuteAsTemplate "lib/vibrant.js" . | minify }}
             <script 
                 src="{{ $vibrantJS.RelPermalink }}"

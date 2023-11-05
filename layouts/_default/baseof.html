@@ -7,7 +7,6 @@
     <body class="{{ block `body-class` . }}{{ end }}">
         {{- partial "head/colorScheme" . -}}
 
-        {{/* The container is wider when there's any activated widget */}}
         {{- $hasWidget := false -}}
         {{- range .Site.Params.widgets -}}
             {{- if gt (len .) 0 -}}
@@ -28,11 +27,13 @@
     {{ $swJS := resources.Get "sw.js" | resources.ExecuteAsTemplate "sw.js" . | minify }}
     <script>
         window.addEventListener('load', () => {
-            if ('serviceWorker' in navigator) {
+            const version = '{{ now.Unix }}';
+            if ('serviceWorker' in navigator && localStorage.getItem("sw.js-version") != version) {
                 navigator.serviceWorker.register('{{ $swJS.RelPermalink }}', {
                     scope: '/'
                 }).then(function (registration) {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    localStorage.setItem("sw.js-version", version);
                 }).catch(function (err) {
                     console.warn('ServiceWorker registration failed: ', err);
                 });
@@ -40,7 +41,7 @@
                     var d = document.querySelector("title");
                     d.innerText = "Need update Service Worker - " + d.innerText
                 });
-            }
+            } else console.log("ServiceWorker already the latest version.")
             quicklink.listen();
         });
     </script>

@@ -1,5 +1,5 @@
 Vibrant:
-    - src: local
+    - src: local-vibrant
       type: script
 
 PhotoSwipe:
