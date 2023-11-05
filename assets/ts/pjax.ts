@@ -30,7 +30,16 @@ export default class Pjax {
             {
                 areas: [
                     'body'
-                ]
+                ],
+                update: {
+                    ignores: {
+                        extension: '[href^="chrome-extension://"]',
+                        security: '[src*=".scr.kaspersky-labs.com/"]',
+                        header: 'header',
+                        socialMenu: '.social-menu',
+                        footer: 'footer',
+                    },
+                }
             }
         );
         window.addEventListener('pjax:load', () => {
