@@ -57,4 +57,4 @@ footer:
         other: Built with {{ .Generator }}
 
     designedBy:
-        other: 主题 {{ .Theme }} 由 {{ .DesignedBy }} 设计
+        other: Theme {{ .Theme }} designed by {{ .DesignedBy }}
