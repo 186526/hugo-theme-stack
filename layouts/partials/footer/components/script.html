@@ -11,7 +11,17 @@
 <script type="text/javascript" src="{{ $script.RelPermalink }}" defer></script>
 
 {{- with resources.Get "ts/custom.ts" -}}
-    {{/* Place your custom script in HUGO_SITE_FOLDER/assets/ts/custom.ts */}}
-    {{- $customScript := . | js.Build $opts -}}
-    <script type="text/javascript" src="{{ $customScript.RelPermalink }}" defer></script>
+{{/* Place your custom script in HUGO_SITE_FOLDER/assets/ts/custom.ts */}}
+{{- $customScript := . | js.Build $opts -}}
+<script type="text/javascript" src="{{ $customScript.RelPermalink }}" defer></script>
 {{- end -}}
+<script>
+    var $buoop = { required: { e: 63, f: 63, o: 70, s: 14, c: 84 }, api: 2024.02 };
+    function $buo_f() {
+        var e = document.createElement("script");
+        e.src = "//browser-update.org/update.min.js";
+        document.body.appendChild(e);
+    };
+    try { document.addEventListener("DOMContentLoaded", $buo_f, false) }
+    catch (e) { window.attachEvent("onload", $buo_f) }
+</script>
