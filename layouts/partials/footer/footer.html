@@ -3,24 +3,43 @@
 {{- $GoVersion := .Site.Hugo.GoVersion -}}
 <footer class="site-footer">
     <section class="copyright">
-        &copy; 
+        &copy;
         {{ if and (.Site.Params.footer.since) (ne .Site.Params.footer.since (int (now.Format "2006"))) }}
-            {{ .Site.Params.footer.since }} - 
+        {{ .Site.Params.footer.since }} -
         {{ end }}
         {{ now.Format "2006" }} {{ default .Site.Title .Site.Copyright }}
     </section>
-    
+
     <section class="powerby">
         {{ with .Site.Params.footer.customText }}
-            {{ . | safeHTML }} <br/>
+        {{ . | safeHTML }} <br />
         {{ end }}
 
-        {{- $Generator := printf `<a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> v%s with %s` $HugoVersion $GoVersion -}}
-        {{- $Theme := printf `<b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener" data-version="%s">Stack</a></b>` $ThemeVersion -}}
+        {{- $Generator := printf `<a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> v%s with %s`
+        $HugoVersion $GoVersion -}}
+        {{- $Theme := printf `<b><a href="https://github.com/CaiJimmy/hugo-theme-stack" target="_blank" rel="noopener"
+                data-version="%s">Stack</a></b>` $ThemeVersion -}}
         {{- $DesignedBy := `<a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>` -}}
 
         {{ T "footer.builtWith" (dict "Generator" $Generator) | safeHTML }} <br />
         {{ T "footer.designedBy" (dict "Theme" $Theme "DesignedBy" $DesignedBy) | safeHTML }} <br />
-        <a href="https://github.com/186526/hugo-theme-stack" target="_blank" rel="noopener">Forked</a> with 💖 by <a href="https://186526.xyz" target="_blank" rel="noopener">real186526</a>
+        <a href="https://github.com/186526/hugo-theme-stack" target="_blank" rel="noopener">Forked</a> with 💖 by <a
+            href="https://186526.xyz" target="_blank" rel="noopener">real186526</a>
+
+        <br><br>
+
+        {{ if .Site.Params.footer.moeICP.enabled }}
+        {{- $MoeICP := .Site.Params.footer.moeICP.number -}}
+        <a alt="Moe ICP {{ $MoeICP }}" href="https://icp.gov.moe/?keyword={{ $MoeICP }}" target="_blank"
+            rel="noopener"><img alt="Moe ICP {{ $MoeICP }}"
+                src="https://186526.xyz/shields.io/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
+        {{ end }}
+
+        {{ with .GitInfo }}
+            <img alt="Build Commit" src="https://186526.xyz/shields.io/badge/commit-{{ .AbbreviatedHash }}-blue">
+        {{ end }}
+
+        <img alt="Latest Update" src="https://186526.xyz/shields.io/date/{{ now.Unix }}?color=sucessful&label=latest%20update">
+
     </section>
 </footer>
