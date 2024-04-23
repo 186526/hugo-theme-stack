@@ -1,42 +1,48 @@
 {{- $List := index .Context.Site.Data.external .Namespace -}}
 {{- with $List -}}
+
     {{- range . -}}
-        {{- if eq .type "script" -}}
-         {{- if eq .src "local-vibrant" -}}
-         {{ $vibrantJS := resources.Get "lib/vibrant.js" | resources.ExecuteAsTemplate "lib/vibrant.js" . | minify }}
-            <script 
-                src="{{ $vibrantJS.RelPermalink }}"
-                {{- with .integrity -}}
-                integrity="{{ . }}"
-                {{- end -}}
-                crossorigin="anonymous"
-                {{ if .defer }}defer{{ end }}
-                >
+    {{- if eq .type "script" -}}
+
+        {{- if eq (substr .src 0 1) "@" -}}
+            {{ $path := (substr .src 1) }}
+            {{ $JS := resources.Get $path | minify }}
+
+            <script src="{{ $JS.RelPermalink }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}}
+                crossorigin="anonymous" {{ if .defer }}defer{{ end }}>
             </script>
-            {{- else -}}
-            <script 
-                src="{{ .src }}"
-                {{- with .integrity -}}
-                integrity="{{ . }}"
-                {{- end -}}
-                crossorigin="anonymous"
-                {{ if .defer }}defer{{ end }}
-                >
-            </script>
-        {{- end -}}
-        {{- else if eq .type "style" -}}
-            <link 
-                rel="stylesheet" 
-                href="{{ .src }}"
-                {{- with .integrity -}}
-                integrity="{{ . }}"
-                {{- end -}}
-                crossorigin="anonymous"
-            >
+
         {{- else -}}
-            {{- errorf "Error: unknown external resource type: %s" .type -}}
+
+        <script src="{{ .src }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}} crossorigin="anonymous" {{ if .defer
+            }}defer{{ end }}>
+        </script>
+
         {{- end -}}
+
+    {{- else if eq .type "style" -}}
+
+        {{- if eq (substr .src 0 1) "@" -}}
+            {{ $path := (substr .src 1) }}
+            {{ $CSS := resources.Get $path | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify }}
+
+            <link rel="stylesheet" href="{{ $CSS.RelPermalink }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}}
+                crossorigin="anonymous">
+
+        {{- else -}}
+            
+            <link rel="stylesheet" href="{{ .src }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}}
+                crossorigin="anonymous">
+
+        {{- end -}}
+
+    {{- else -}}
+
+    {{- errorf "Error: unknown external resource type: %s" .type -}}
+
     {{- end -}}
-{{- else -}}
+    {{- end -}}
+    {{- else -}}
     {{- errorf "Error: external resource '%s' is not found" .Namespace -}}
+
 {{- end -}}
