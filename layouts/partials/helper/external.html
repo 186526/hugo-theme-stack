@@ -6,9 +6,9 @@
 
         {{- if eq (substr .src 0 1) "@" -}}
             {{ $path := (substr .src 1) }}
-            {{ $JS := resources.Get $path | minify }}
+            {{ $JS := resources.Get $path | minify | resources.Fingerprint "sha512"}}
 
-            <script src="{{ $JS.RelPermalink }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}}
+            <script src="{{ $JS.RelPermalink }}" integrity="{{ $JS.Data.Integrity }}"
                 crossorigin="anonymous" {{ if .defer }}defer{{ end }}>
             </script>
 
@@ -24,9 +24,9 @@
 
         {{- if eq (substr .src 0 1) "@" -}}
             {{ $path := (substr .src 1) }}
-            {{ $CSS := resources.Get $path | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify }}
+            {{ $CSS := resources.Get $path | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" }}
 
-            <link rel="stylesheet" href="{{ $CSS.RelPermalink }}" {{- with .integrity -}} integrity="{{ . }}" {{- end -}}
+            <link rel="stylesheet" href="{{ $CSS.RelPermalink }}" integrity="{{ $CSS.Data.Integrity }}"
                 crossorigin="anonymous">
 
         {{- else -}}

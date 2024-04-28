@@ -18,7 +18,7 @@ PhotoSwipe:
       type: style
 
 KaTeX:
-    - src: "@/lib/katex/katex.min.css"
+    - src: "@/lib/katex/katex.css"
       type: style
 
     - src: "@/lib/katex/katex.min.js"

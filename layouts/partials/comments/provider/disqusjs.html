@@ -2,8 +2,8 @@
 {{- $disqusjs := .Site.Params.Comments.disqusjs -}}
 {{- if and (not $pc.Disable) (and $disqusjs.Shortname $disqusjs.ApiKey) -}}
 
-{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify -}}
-<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" -}}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
 
 <div class="disqus-container">
     <div id="disqus_thread"></div>
