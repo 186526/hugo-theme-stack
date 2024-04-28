@@ -2,12 +2,40 @@
 {{- $HugoVersion := .Site.Hugo.Version -}}
 {{- $GoVersion := .Site.Hugo.GoVersion -}}
 <footer class="site-footer">
+    <section class="showWhenPrint site-info">
+        {{ with .Site.Params.sidebar.avatar }}
+        {{ if (default true .enabled) }}
+        <figure class="site-avatar">
+            <a href="{{ .Site.BaseURL }}">
+            {{ if not .local }}
+                <img src="{{ .src }}" width="32" height="32" class="site-logo" loading="lazy" alt="Avatar">
+            {{ else }}
+                {{ $avatar := resources.Get (.src) }}
+                
+                {{ if $avatar }}
+                    {{ $avatarResized := $avatar.Resize "32x" }}
+                    <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
+                        height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+                {{ else }}
+                    {{ errorf "Failed loading avatar from %q" . }}
+                {{ end }}
+            {{ end }}
+            </a>
+            {{ with $.Site.Params.sidebar.emoji }}
+                <span class="emoji">{{ . }}</span>
+            {{ end }}
+        </figure>
+        {{ end }}
+        {{ end }}
+        <h2 class="site-description">{{ .Site.Params.sidebar.subtitle }}</h2>
+    </section>
+
     <section class="copyright">
         &copy;
         {{ if and (.Site.Params.footer.since) (ne .Site.Params.footer.since (int (now.Format "2006"))) }}
         {{ .Site.Params.footer.since }} -
         {{ end }}
-        {{ now.Format "2006" }} {{ default .Site.Title .Site.Copyright }}
+        {{ now.Format "2006" }} <a href="{{ .Site.BaseURL }}" alt="{{.Site.Title}}">{{ default .Site.Title .Site.Copyright }}</a>
     </section>
 
     <section class="powerby">

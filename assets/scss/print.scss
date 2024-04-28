@@ -1,13 +1,47 @@
+.showWhenPrint {
+	display: none;
+}
+
+.site-footer {
+	.site-avatar {
+		margin: 0 !important;
+	}
+
+	.site-description {
+		color: var(--body-text-color);
+		font-weight: 400;
+		margin: 0;
+		font-size: 1.4rem;
+	}
+
+	.site-info {
+		margin-bottom: 10px;
+	}
+}
+
+.main-article .widget--toc {
+	margin-top: 20px;
+	box-shadow: none;
+	border-radius: 0px;
+}
+
 @media print {
 	:root {
 		--base-font-family: "Fira Sans", "Noto Serif SC", serif;
+		--article-font-size: 13pt;
 	}
 
-	.sidebar:not(.left-sidebar),
+	.showWhenPrint {
+		display: block !important;
+	}
+
+	.sidebar,
 	.related-content--wrapper,
 	.disqus-container,
 	.social-menu,
-	.hamburger-box {
+	.hamburger-box,
+	.widget-icon,
+	.widget-title {
 		display: none !important;
 	}
 
@@ -15,12 +49,22 @@
 		padding: 0 !important;
 	}
 
-	article a:not(.article-category > a, .article-tags > a, .article-title > a) {
+	article
+		a:not(
+			.article-category > a,
+			.article-tags > a,
+			.article-title > a,
+			#TableOfContents a
+		) {
 		text-decoration: underline !important;
 
 		&::after {
 			content: " (" attr(href) ")";
 		}
+	}
+
+	.site-footer > .copyright a::after {
+		content: " (" attr(href) ")";
 	}
 
 	article .article-title {
@@ -35,11 +79,16 @@
 	.article-category > a,
 	.article-tags > a {
 		color: rgba(0, 0, 0, 0.8) !important;
+		background-color: transparent !important;
 
-		font-size: 13pt !important;
+		font-size: 13px;
 		padding: 0px;
 
 		box-shadow: none !important;
+	}
+
+	article {
+		font-size: 13pt;
 	}
 
 	* {
@@ -48,11 +97,11 @@
 
 	.main,
 	article > *,
-	article {
+	article,
+	article blockquote {
 		page-break-inside: auto;
 	}
 
-	.left-sidebar,
 	.article-details,
 	.article-content,
 	.article-footer,
@@ -67,12 +116,12 @@
 
 	.article-tags::before {
 		content: "Tags: ";
-		font-size: 13pt;
+		font-size: 13px;
 	}
 
 	.article-category::before {
 		content: "Categories: ";
-		font-size: 13pt;
+		font-size: 13px;
 	}
 
 	.article-content hr,
@@ -84,5 +133,10 @@
 		margin-bottom: 20px !important;
 		border: 0 !important;
 		opacity: 1 !important;
+	}
+
+	.pagination {
+		box-shadow: none !important;
+		border-radius: 0px !important;
 	}
 }

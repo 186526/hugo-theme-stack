@@ -14,6 +14,23 @@ import { setupScrollspy } from "ts/scrollspy";
 import { setupSmoothAnchors } from "ts/smoothAnchors";
 import Pjax from "ts/pjax";
 
+function handlePrintChange(event: MediaQueryListEvent | MediaQueryList) {
+	if (event.matches) {
+		document.querySelector("html").setAttribute("data-scheme", "light");
+
+		if (document.querySelector("body").classList.contains("article-page")) {
+			if (document.querySelector(".right-sidebar")) {
+				const toc = document
+					.querySelector(".right-sidebar")
+					.querySelector(".widget--toc");
+
+				const content = document.querySelector(".article-content");
+				content.parentElement.insertBefore(toc, content);
+			}
+		}
+	}
+}
+
 let Stack = {
 	reset: () => {
 		/**
@@ -98,14 +115,13 @@ let Stack = {
 		});
 
 		new StackColorScheme(document.getElementById("dark-mode-toggle"));
-
-		if (window.matchMedia("print").matches) {
-			document.querySelector("html").setAttribute("data-scheme", "light");
-		}
+		handlePrintChange(window.matchMedia("print"));
 	},
 	init: () => {
 		Stack.reset();
 		new Pjax();
+
+		window.matchMedia("print").addEventListener("change", handlePrintChange);
 	},
 };
 
