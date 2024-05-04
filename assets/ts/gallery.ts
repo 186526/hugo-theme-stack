@@ -34,9 +34,9 @@ class StackGallery {
     private loadItems(container: HTMLElement) {
         this.items = [];
 
-        const figures = container.querySelectorAll('figure.gallery-image');
+        const figures: NodeListOf<HTMLElement> = container.querySelectorAll('figure.gallery-image');
 
-        for (const el of figures) {
+        for (const el of Array.from(figures)) {
             const figcaption = el.querySelector('figcaption'),
                 img = el.querySelector('img');
 
@@ -61,10 +61,15 @@ class StackGallery {
         /// because it can not detect whether image is being wrapped by a link or not
         /// and it lead to a invalid HTML construction (<a><figure><img></figure></a>)
 
-        const images = container.querySelectorAll('img.gallery-image');
-        for (const img of Array.from(images)) {
+        const images: NodeListOf<HTMLImageElement> = container.querySelectorAll('img.gallery-image');
+        for (let img of Array.from(images)) {
             /// Images are wrapped with figure tag if the paragraph has only images without texts
             /// This is done to allow inline images within paragraphs
+
+            if(img.hasAttribute('iswebp')) {
+                img = img.parentElement as any;
+            }
+
             const paragraph = img.closest('p');
 
             if (!paragraph || !container.contains(paragraph)) continue;
@@ -81,6 +86,9 @@ class StackGallery {
             const hasLink = img.parentElement.tagName == 'A';
 
             let el: HTMLElement = img;
+            if(img.hasAttribute('isWebp')) {
+                el = img.parentElement;
+            }
             /// Wrap image with figure tag, with flex-grow and flex-basis values extracted from img's data attributes
             const figure = document.createElement('figure');
             figure.style.setProperty('flex-grow', img.getAttribute('data-flex-grow') || '1');
@@ -105,7 +113,9 @@ class StackGallery {
 
                 const a = document.createElement('a');
                 a.href = img.src;
+                if(img.tagName!='img') a.href = img.querySelector('img').src;
                 a.setAttribute('target', '_blank');
+
                 img.parentNode.insertBefore(a, img);
                 a.appendChild(img);
             }
@@ -115,7 +125,7 @@ class StackGallery {
 
         let currentGallery = [];
 
-        for (const figure of figuresEl) {
+        for (const figure of Array.from(figuresEl)) {
             if (!currentGallery.length) {
                 /// First iteration
                 currentGallery = [figure];

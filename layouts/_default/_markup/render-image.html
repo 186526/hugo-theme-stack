@@ -5,7 +5,6 @@
 {{- $Height := 0 -}}
 {{- $Srcset := "" -}}
 
-{{/* SVG and external images won't work with gallery layout, because their width and height attributes are unknown */}}
 {{- $galleryImage := false -}}
 
 {{- if $image -}}
@@ -23,19 +22,43 @@
 			{{- $Srcset = printf `%s 480w, %s 1024w` $small.RelPermalink $big.RelPermalink -}}
 		{{- end -}}
 	{{- end -}}
+
+	{{- $webp := $image.Resize (printf "%dx%d webp photo" $image.Width $image.Height) }}
+
+	<picture>
+		<source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+		<source srcset="{{ $Permalink }}">
+		
+		<img src="{{ $Permalink }}"
+		{{ with $Width }}width="{{ . }}"{{ end }}
+		{{ with $Height }}height="{{ . }}"{{ end }}
+		{{ with $Srcset }}srcset="{{ . }}"{{ end }}
+		loading="lazy"
+		{{ with $alt }}
+			alt="{{ . }}"
+		{{ end }}
+		{{ if $galleryImage }}
+			class="gallery-image" 
+			data-flex-grow="{{ div (mul $image.Width 100) $image.Height }}"
+			data-flex-basis="{{ div (mul $image.Width 240) $image.Height }}px"
+			isWebp="true"
+		{{ end }}>
+	</picture>
+{{- else -}}
+
+	<img src="{{ $Permalink }}"
+		{{ with $Width }}width="{{ . }}"{{ end }}
+		{{ with $Height }}height="{{ . }}"{{ end }}
+		{{ with $Srcset }}srcset="{{ . }}"{{ end }}
+		loading="lazy"
+		{{ with $alt }}
+			alt="{{ . }}"
+		{{ end }}
+		{{ if $galleryImage }}
+			class="gallery-image" 
+			data-flex-grow="{{ div (mul $image.Width 100) $image.Height }}"
+			data-flex-basis="{{ div (mul $image.Width 240) $image.Height }}px"
+		{{ end }}>
+
 {{- end -}}
 
-<img src="{{ $Permalink }}"
-	{{ with $Width }}width="{{ . }}"{{ end }}
-	{{ with $Height }}height="{{ . }}"{{ end }}
-	{{ with $Srcset }}srcset="{{ . }}"{{ end }}
-	loading="lazy"
-	{{ with $alt }}
-		alt="{{ . }}"
-	{{ end }}
-	{{ if $galleryImage }}
-		class="gallery-image" 
-		data-flex-grow="{{ div (mul $image.Width 100) $image.Height }}"
-		data-flex-basis="{{ div (mul $image.Width 240) $image.Height }}px"
-	{{ end }}
->

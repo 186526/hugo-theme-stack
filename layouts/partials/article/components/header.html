@@ -18,12 +18,21 @@
                         {{- $Height = $thumbnail.Height -}}
                     {{- end -}}
 
-                    <img src="{{ $Permalink }}"
-                        {{ with $Srcset }}srcset="{{ . }}"{{ end }}
-                        width="{{ $Width }}" 
-                        height="{{ $Height }}" 
-                        loading="lazy"
-                        alt="Featured image of post {{ .Title }}" />
+                    {{- $webp := $image.resource.Resize (printf "%dx%d webp photo" $image.resource.Width $image.resource.Height) }}
+
+                    <picture>
+                        <source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+                        <source srcset="{{ $Permalink }}">
+                
+
+                        <img src="{{ $Permalink }}"
+                            {{ with $Srcset }}srcset="{{ . }}"{{ end }}
+                            width="{{ $Width }}" 
+                            height="{{ $Height }}" 
+                            loading="lazy"
+                            alt="Featured image of post {{ .Title }}" />
+
+                    </picture>
                 {{ else }}
                     <img src="{{ $image.permalink }}" loading="lazy" alt="Featured image of post {{ .Title }}" />
                 {{ end }}

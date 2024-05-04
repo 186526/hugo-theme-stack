@@ -17,8 +17,17 @@
                     
                     {{ if $avatar }}
                         {{ $avatarResized := $avatar.Resize "300x" }}
+
+                        {{- $webp := $avatarResized.Resize (printf "%dx%d webp photo" $avatarResized.Width $avatarResized.Height) }}
+
+                        <picture>
+                            <source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+                            <source srcset="{{ $avatarResized.RelPermalink }}">
+
                         <img src="{{ $avatarResized.RelPermalink }}" width="{{ $avatarResized.Width }}"
                             height="{{ $avatarResized.Height }}" class="site-logo" loading="lazy" alt="Avatar">
+
+                        </picture>
                     {{ else }}
                         {{ errorf "Failed loading avatar from %q" . }}
                     {{ end }}
