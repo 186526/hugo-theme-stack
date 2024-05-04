@@ -17,6 +17,7 @@ body {
 .sidebar,
 .related-content--wrapper,
 .disqus-container,
+.artalk,
 .social-menu,
 .hamburger-box,
 .widget-icon,
@@ -31,6 +32,7 @@ body {
 article a:not(.article-category > a,
     .article-tags > a,
     .article-title > a,
+    .article-image > a,
     #TableOfContents a) {
     text-decoration: underline !important;
 

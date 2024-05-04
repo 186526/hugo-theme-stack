@@ -5,6 +5,9 @@
 .site-footer {
 	.site-avatar {
 		margin: 0 !important;
+		img {
+			border-radius: 100%;
+		}
 	}
 
 	.site-description {
