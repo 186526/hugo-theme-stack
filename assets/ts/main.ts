@@ -14,9 +14,10 @@ import { setupScrollspy } from "ts/scrollspy";
 import { setupSmoothAnchors } from "ts/smoothAnchors";
 import Pjax from "ts/pjax";
 
-function handlePrintChange(event: MediaQueryListEvent | MediaQueryList) {
+function handlePrintChange(event: { matches: boolean; colorScheme?: boolean }) {
 	if (event.matches) {
-		document.querySelector("html").setAttribute("data-scheme", "light");
+		if(!event.colorScheme) document.querySelector("html").setAttribute("data-scheme", "light");
+		document.querySelector("html").setAttribute("print-scheme", "enable");
 
 		if (document.querySelector("body").classList.contains("article-page")) {
 			if (document.querySelector(".right-sidebar")) {
@@ -28,10 +29,13 @@ function handlePrintChange(event: MediaQueryListEvent | MediaQueryList) {
 				content.parentElement.insertBefore(toc, content);
 			}
 		}
+	} else {
+		document.querySelector('html').setAttribute('print-scheme', "disable");
 	}
 }
 
 let Stack = {
+	colorScheme: null,
 	reset: () => {
 		/**
 		 * Bind menu event
@@ -114,14 +118,25 @@ let Stack = {
 			});
 		});
 
-		new StackColorScheme(document.getElementById("dark-mode-toggle"));
+		Stack.colorScheme = new StackColorScheme(document.getElementById("dark-mode-toggle"));
 		handlePrintChange(window.matchMedia("print"));
+
+		if (new URL(window.location.href).searchParams.has("print")) {
+			handlePrintChange({
+				matches: true,
+				colorScheme: true,
+			})
+		} else {
+			handlePrintChange({
+				matches: false,
+			})
+		}
+
+		window.matchMedia("print").addEventListener("change", handlePrintChange);
 	},
 	init: () => {
 		Stack.reset();
 		new Pjax();
-
-		window.matchMedia("print").addEventListener("change", handlePrintChange);
 	},
 };
 

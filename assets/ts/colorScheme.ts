@@ -22,17 +22,23 @@ class StackColorScheme {
         localStorage.setItem(this.localStorageKey, this.currentScheme);
     }
 
+    public toggle(preferColor?: colorScheme) {
+        if (preferColor) {
+            this.currentScheme = preferColor;
+        }
+
+        if (this.isDark()) {
+            this.currentScheme = 'light';
+        } else {
+            this.currentScheme = 'dark';
+        }
+
+        this.setBodyClass();
+    }
+
     private bindClick(toggleEl: HTMLElement) {
         toggleEl.addEventListener('click', (e) => {
-            if (this.isDark()) {
-                /// Disable dark mode
-                this.currentScheme = 'light';
-            }
-            else {
-                this.currentScheme = 'dark';
-            }
-
-            this.setBodyClass();
+            this.toggle()
 
             if (this.currentScheme == this.systemPreferScheme) {
                 /// Set to auto

@@ -42,10 +42,7 @@ export default class Pjax {
                 }
             }
         );
-        window.addEventListener('pjax:load', () => {
-            window.Stack.reset();
-        });
         window.addEventListener("pjax:fetch", () => { window.NProgress.inc(); });
-        document.addEventListener("pjax:ready", () => { window.NProgress.done(); });
+        document.addEventListener("pjax:ready", () => { window.Stack.reset(); window.NProgress.done(); });
     }
 }
