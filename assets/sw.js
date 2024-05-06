@@ -9,7 +9,7 @@ const { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } = strategi
 const { ExpirationPlugin } = expiration;
 const { CacheableResponsePlugin } = cacheableResponse;
 
-const cacheSuffixVersion = '-231105a',
+const cacheSuffixVersion = '-240001a',
     maxEntries = 100;
 
 self.addEventListener('activate', (event) => {
