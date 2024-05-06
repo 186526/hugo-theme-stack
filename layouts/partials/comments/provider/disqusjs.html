@@ -5,6 +5,8 @@
 {{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" -}}
 <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
 
+{{ $JS := resources.Get "lib/disqusjs.es2015.umd.min.js" | minify | resources.Fingerprint "sha512"}}
+
 <div class="disqus-container">
     <div id="disqus_thread"></div>
     <script type="application/javascript">
@@ -29,7 +31,8 @@
             }
 
             let d = document.createElement('script');
-            d.src = 'https://lib.baomitu.com/disqusjs/3.0.2/disqusjs.es2015.umd.min.js';
+            d.src = '{{ $JS.RelPermalink }}';
+            d.integrity = '{{ $JS.Data.Integrity }}'
             d.async = false;
             document.body.appendChild(d);
             d.onload = () => {
