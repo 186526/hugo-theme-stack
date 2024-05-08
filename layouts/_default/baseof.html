@@ -24,12 +24,13 @@
         </div>
         {{ partial "footer/include.html" . }}
     </body>
-    {{ $swJS := resources.Get "sw.js" | resources.ExecuteAsTemplate "sw.js" . | minify }}
+    {{ $swJS := resources.Get "sw.js" | minify | resources.Fingerprint "sha512" }}
+    <script nomodule>document.querySelector("html").setAttribute("print-scheme", "enable");</script>
     <script>
         window.addEventListener('load', () => {
-            const version = '{{ now.Unix }}';
+            const version = '{{ $swJS.RelPermalink }}';
             if ('serviceWorker' in navigator && localStorage.getItem("sw.js-version") != version) {
-                navigator.serviceWorker.register('{{ $swJS.RelPermalink }}', {
+                navigator.serviceWorker.register(version, {
                     scope: '/'
                 }).then(function (registration) {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
