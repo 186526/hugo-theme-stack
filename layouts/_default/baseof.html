@@ -25,7 +25,11 @@
         {{ partial "footer/include.html" . }}
     </body>
     {{ $swJS := resources.Get "sw.js" | minify | resources.Fingerprint "sha512" }}
-    <script nomodule>document.querySelector("html").setAttribute("print-scheme", "enable");</script>
+    <script nomodule>
+        if (navigator.userAgent.indexOf("MSIE") != -1 || navigator.userAgent.indexOf("Trident") != -1) {
+            document.querySelector("html").setAttribute("print-scheme", "enable");
+        }
+    </script>
     <script>
         window.addEventListener('load', () => {
             const version = '{{ $swJS.RelPermalink }}';
