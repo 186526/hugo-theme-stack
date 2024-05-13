@@ -116,3 +116,7 @@ footer.site-footer:before {
 	box-shadow: none !important;
 	border-radius: 0px !important;
 }
+
+.article-header {
+	margin-top: calc(var(--card-padding) + 20px) !important;
+}
