@@ -16,7 +16,8 @@ import Pjax from "ts/pjax";
 
 function handlePrintChange(event: { matches: boolean; colorScheme?: boolean }) {
 	if (event.matches) {
-		if(!event.colorScheme) document.querySelector("html").setAttribute("data-scheme", "light");
+		if (!event.colorScheme)
+			document.querySelector("html").setAttribute("data-scheme", "light");
 		document.querySelector("html").setAttribute("print-scheme", "enable");
 
 		if (document.querySelector("body").classList.contains("article-page")) {
@@ -30,7 +31,20 @@ function handlePrintChange(event: { matches: boolean; colorScheme?: boolean }) {
 			}
 		}
 	} else {
-		document.querySelector('html').setAttribute('print-scheme', "disable");
+		document.querySelector("html").setAttribute("print-scheme", "disable");
+	}
+}
+
+function checkURLhasPrint() {
+	if (new URL(window.location.href).searchParams.has("print")) {
+		handlePrintChange({
+			matches: true,
+			colorScheme: true,
+		});
+	} else {
+		handlePrintChange({
+			matches: false,
+		});
 	}
 }
 
@@ -118,19 +132,12 @@ let Stack = {
 			});
 		});
 
-		Stack.colorScheme = new StackColorScheme(document.getElementById("dark-mode-toggle"));
+		Stack.colorScheme = new StackColorScheme(
+			document.getElementById("dark-mode-toggle")
+		);
 		handlePrintChange(window.matchMedia("print"));
 
-		if (new URL(window.location.href).searchParams.has("print")) {
-			handlePrintChange({
-				matches: true,
-				colorScheme: true,
-			})
-		} else {
-			handlePrintChange({
-				matches: false,
-			})
-		}
+		checkURLhasPrint();
 
 		window.matchMedia("print").addEventListener("change", handlePrintChange);
 	},
@@ -145,6 +152,8 @@ window.addEventListener("load", () => {
 		Stack.init();
 	}, 0);
 });
+
+checkURLhasPrint();
 
 declare global {
 	interface Window {
