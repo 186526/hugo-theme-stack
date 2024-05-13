@@ -19,6 +19,7 @@ const { ExpirationPlugin } = expiration;
 const { CacheableResponsePlugin } = cacheableResponse;
 
 const cacheSuffixVersion = self.location.pathname,
+	blogSuffixVersion = `{{ now.Unix }}`,
 	maxEntries = 100;
 
 self.addEventListener("activate", (event) => {
@@ -28,7 +29,11 @@ self.addEventListener("activate", (event) => {
 				keys.map((key) => {
 					if (key.includes("disqus-cdn-cache")) return caches.delete(key);
 					if (key.includes("disqus-img-cache")) return caches.delete(key);
-					if (!key.includes(cacheSuffixVersion)) return caches.delete(key);
+					if (
+						!key.includes(cacheSuffixVersion) &&
+						!key.includes("static-immutable")
+					)
+						return caches.delete(key);
 				})
 			);
 		})
@@ -130,7 +135,9 @@ routing.registerRoute(
 	"POST"
 );
 
-const StaleWhileRevalidateInstance = new StaleWhileRevalidate();
+const StaleWhileRevalidateInstance = new StaleWhileRevalidate({
+	cacheName: "static-immutable" + cacheSuffixVersion,
+});
 /*
  * Others img
  * Method: staleWhileRevalidate
@@ -160,7 +167,12 @@ routing.registerRoute(
  */
 routing.registerRoute("/sw.js", StaleWhileRevalidateInstance);
 
-routing.registerRoute(new RegExp("blog"), StaleWhileRevalidateInstance);
+routing.registerRoute(
+	new RegExp("blog"),
+	new StaleWhileRevalidate({
+		cacheName: "blog-cache" + cacheSuffixVersion,
+	})
+);
 
 routing.registerRoute(/.*localhost/, new NetworkOnly());
 
