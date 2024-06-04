@@ -46,6 +46,10 @@ function checkURLhasPrint() {
 			matches: false,
 		});
 	}
+
+	if (new URL(window.location.href).searchParams.has("withoutFooter")) {
+		(<HTMLElement>document.querySelector('footer.site-footer')).style.display = 'none';
+	}
 }
 
 let Stack = {
