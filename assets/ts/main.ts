@@ -14,22 +14,27 @@ import { setupScrollspy } from "ts/scrollspy";
 import { setupSmoothAnchors } from "ts/smoothAnchors";
 import Pjax from "ts/pjax";
 
+function moveToc() {
+	if (document.querySelector("body").classList.contains("article-page")) {
+		if (document.querySelector(".right-sidebar")) {
+			const toc = document
+				.querySelector(".right-sidebar")
+				.querySelector(".widget--toc")
+				.cloneNode(true);
+
+			const content = document.querySelector(".article-content");
+			content.parentElement.insertBefore(toc, content);
+		}
+	}
+}
+
 function handlePrintChange(event: { matches: boolean; colorScheme?: boolean }) {
 	if (event.matches) {
 		if (!event.colorScheme)
 			document.querySelector("html").setAttribute("data-scheme", "light");
 		document.querySelector("html").setAttribute("print-scheme", "enable");
 
-		if (document.querySelector("body").classList.contains("article-page")) {
-			if (document.querySelector(".right-sidebar")) {
-				const toc = document
-					.querySelector(".right-sidebar")
-					.querySelector(".widget--toc");
-
-				const content = document.querySelector(".article-content");
-				content.parentElement.insertBefore(toc, content);
-			}
-		}
+		moveToc();
 	} else {
 		document.querySelector("html").setAttribute("print-scheme", "disable");
 	}
@@ -48,7 +53,8 @@ function checkURLhasPrint() {
 	}
 
 	if (new URL(window.location.href).searchParams.has("withoutFooter")) {
-		(<HTMLElement>document.querySelector('footer.site-footer')).style.display = 'none';
+		(<HTMLElement>document.querySelector("footer.site-footer")).style.display =
+			"none";
 	}
 }
 
@@ -139,11 +145,15 @@ let Stack = {
 		Stack.colorScheme = new StackColorScheme(
 			document.getElementById("dark-mode-toggle")
 		);
+
 		handlePrintChange(window.matchMedia("print"));
+		window.matchMedia("print").addEventListener("change", handlePrintChange);
+
+		if (window.matchMedia("(max-width: 1024px)").matches) {
+			moveToc();
+		}
 
 		checkURLhasPrint();
-
-		window.matchMedia("print").addEventListener("change", handlePrintChange);
 	},
 	init: () => {
 		Stack.reset();
