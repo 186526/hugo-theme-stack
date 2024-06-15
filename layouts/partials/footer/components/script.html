@@ -3,11 +3,6 @@
 {{- $opts := dict "minify" hugo.IsProduction -}}
 {{- $script := resources.Get "ts/main.ts" | js.Build $opts | resources.Fingerprint "sha512" -}}
 
-{{ $pjaxAPIJS := resources.Get "lib/pjax-api.js" | resources.ExecuteAsTemplate "lib/pjax-api.js" . | resources.Fingerprint "sha512" }}
-<script src="{{ $pjaxAPIJS.RelPermalink }}" integrity="{{ $pjaxAPIJS.Data.Integrity }}"></script>
-{{ $nprogressJS := resources.Get "lib/nprogress.js" | resources.ExecuteAsTemplate "lib/nprogress.js" . | resources.Fingerprint "sha512" }}
-<script src="{{ $nprogressJS.RelPermalink }}" integrity="{{ $nprogressJS.Data.Integrity }}"></script>
-
 <script type="text/javascript" src="{{ $script.RelPermalink }}" integrity="{{ $script.Data.Integrity }}" defer></script>
 
 {{- with resources.Get "ts/custom.ts" -}}

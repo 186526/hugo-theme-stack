@@ -14,7 +14,12 @@ import { setupScrollspy } from "ts/scrollspy";
 import { setupSmoothAnchors } from "ts/smoothAnchors";
 import Pjax from "ts/pjax";
 
+let isMoved: boolean = false;
+
 function moveToc() {
+	if (isMoved) return;
+	else isMoved = true;
+
 	if (document.querySelector("body").classList.contains("article-page")) {
 		if (document.querySelector(".right-sidebar")) {
 			const toc = document
@@ -61,6 +66,7 @@ function checkURLhasPrint() {
 let Stack = {
 	colorScheme: null,
 	reset: () => {
+		isMoved = false;
 		/**
 		 * Bind menu event
 		 */
@@ -161,13 +167,7 @@ let Stack = {
 	},
 };
 
-window.addEventListener("load", () => {
-	setTimeout(function () {
-		Stack.init();
-	}, 0);
-});
-
-checkURLhasPrint();
+Stack.init();
 
 declare global {
 	interface Window {
