@@ -24,7 +24,7 @@
 
         {{- if eq (substr .src 0 1) "@" -}}
             {{ $path := (substr .src 1) }}
-            {{ $CSS := resources.Get $path | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" }}
+            {{ $CSS := resources.Get $path | toCSS | css.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" }}
 
             <link rel="stylesheet" href="{{ $CSS.RelPermalink }}" integrity="{{ $CSS.Data.Integrity }}"
                 crossorigin="anonymous">

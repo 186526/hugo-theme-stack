@@ -2,10 +2,10 @@
 {{- $disqusjs := .Site.Params.Comments.disqusjs -}}
 {{- if and (not $pc.Disable) (and $disqusjs.Shortname $disqusjs.ApiKey) -}}
 
-{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | resources.ToCSS | resources.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512" -}}
+{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | toCSS | minify | css.PostCSS  (dict "config" "./postcss.config.js") | minify | resources.Fingerprint "sha512"  -}}
 <link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
 
-{{ $JS := resources.Get "lib/disqusjs.es2015.umd.min.js" | minify | resources.Fingerprint "sha512"}}
+{{ $JS := resources.Get "lib/disqusjs.es2015.umd.min.js" | minify | resources.Fingerprint "sha512" }}
 
 <div class="disqus-container">
     <div id="disqus_thread"></div>
