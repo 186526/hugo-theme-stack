@@ -63,10 +63,17 @@ class Search {
 		this.resultTitleTemplate = resultTitleTemplate;
 		this.eventHandler = this.eventHandlerMaker();
 
-		this.handleQueryString();
-		this.bindQueryStringChange();
-		this.bindSearchForm();
-	}
+        /// Check if there's already value in the search input
+        if (this.input.value.trim() !== '') {
+            this.doSearch(this.input.value.split(' '));
+        }
+        else {
+            this.handleQueryString();
+        }
+
+        this.bindQueryStringChange();
+        this.bindSearchForm();
+    }
 
 	/**
 	 * Processes search matches
