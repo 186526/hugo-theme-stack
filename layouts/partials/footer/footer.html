@@ -60,14 +60,14 @@
         {{- $MoeICP := .Site.Params.footer.moeICP.number -}}
         <a alt="Moe ICP {{ $MoeICP }}" href="https://icp.gov.moe/?keyword={{ $MoeICP }}" target="_blank"
             rel="noopener"><img alt="Moe ICP {{ $MoeICP }}"
-                src="https://unpkg.assets.real186526.cn/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
+                src="https://unpkg.assets.real186526.cn/shields.io/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
         {{ end }}
 
         {{ with .GitInfo }}
-            <img alt="Build Commit" src="https://unpkg.assets.real186526.cn/badge/commit-{{ .AbbreviatedHash }}-blue">
+            <img alt="Build Commit" src="https://unpkg.assets.real186526.cn/shields.io/badge/commit-{{ .AbbreviatedHash }}-blue">
         {{ end }}
 
-        <img alt="Latest Update" src="https://unpkg.assets.real186526.cn/date/{{ now.Unix }}?color=sucessful&label=latest%20update">
+        <img alt="Latest Update" src="https://unpkg.assets.real186526.cn/shields.io/date/{{ now.Unix }}?color=sucessful&label=latest%20update">
 
     </section>
 </footer>
