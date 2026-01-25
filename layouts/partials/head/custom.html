@@ -1,3 +1,0 @@
-{{ $QuicklinkJS := resources.Get "lib/quicklink.js" | resources.ExecuteAsTemplate "lib/quicklink.js" . | minify | resources.Fingerprint "sha512"}}
-
-<script src="{{ $QuicklinkJS.RelPermalink }}" integrity="{{ $QuicklinkJS.Data.Integrity }}"></script>
