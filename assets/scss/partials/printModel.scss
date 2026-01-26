@@ -120,3 +120,7 @@ footer.site-footer:before {
 .article-header {
 	margin-top: calc(var(--card-padding) + 20px) !important;
 }
+
+.article-toc > details > summary {
+	display: none !important;
+}
