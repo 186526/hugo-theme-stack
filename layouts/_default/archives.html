@@ -15,8 +15,7 @@
         {{ end }}
     </header>
 
-    {{ $pages := where .Site.RegularPages "Type" "in" .Site.Params.mainSections }}
-    {{ $filtered := where $pages "Params.hidden" "!=" true }}
+    {{ $pages := partial "helper/pages.html" .Site.Home }}
 
     {{ range $filtered.GroupByDate "2006" }}
     {{ $id := lower (replace .Key " " "-") }}
