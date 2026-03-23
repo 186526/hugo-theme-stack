@@ -63,17 +63,16 @@ class Search {
 		this.resultTitleTemplate = resultTitleTemplate;
 		this.eventHandler = this.eventHandlerMaker();
 
-        /// Check if there's already value in the search input
-        if (this.input.value.trim() !== '') {
-            this.doSearch(this.input.value.split(' '));
-        }
-        else {
-            this.handleQueryString();
-        }
+		/// Check if there's already value in the search input
+		if (this.input.value.trim() !== "") {
+			this.doSearch(this.input.value.split(" "));
+		} else {
+			this.handleQueryString();
+		}
 
-        this.bindQueryStringChange();
-        this.bindSearchForm();
-    }
+		this.bindQueryStringChange();
+		this.bindSearchForm();
+	}
 
 	/**
 	 * Processes search matches
@@ -89,7 +88,7 @@ class Search {
 		matches: match[],
 		ellipsis: boolean = true,
 		charLimit = 140,
-		offset = 20
+		offset = 20,
 	): string {
 		matches.sort((a, b) => {
 			return a.start - b.start;
@@ -110,11 +109,11 @@ class Search {
 			if (ellipsis && item.start - offset > lastIndex) {
 				resultArray.push(
 					`${replaceHTMLEnt(
-						str.substring(lastIndex, lastIndex + offset)
-					)} [...] `
+						str.substring(lastIndex, lastIndex + offset),
+					)} [...] `,
 				);
 				resultArray.push(
-					`${replaceHTMLEnt(str.substring(item.start - offset, item.start))}`
+					`${replaceHTMLEnt(str.substring(item.start - offset, item.start))}`,
 				);
 				charCount += offset * 2;
 			} else {
@@ -134,7 +133,7 @@ class Search {
 			}
 
 			resultArray.push(
-				`<mark>${replaceHTMLEnt(str.substring(item.start, end))}</mark>`
+				`<mark>${replaceHTMLEnt(str.substring(item.start, end))}</mark>`,
 			);
 			charCount += end - item.start;
 
@@ -170,7 +169,7 @@ class Search {
 					return v.trim() !== "";
 				})
 				.join("|"),
-			"gi"
+			"gi",
 		);
 
 		for (const item of rawData) {
@@ -232,7 +231,7 @@ class Search {
 
 		this.resultTitle.innerText = this.generateResultTitle(
 			results.length,
-			((endTime - startTime) / 1000).toPrecision(1)
+			((endTime - startTime) / 1000).toPrecision(1),
 		);
 	}
 
@@ -252,7 +251,7 @@ class Search {
 			for (const item of this.data) {
 				item.content = parser.parseFromString(
 					item.content,
-					"text/html"
+					"text/html",
 				).body.innerText;
 			}
 		}
@@ -362,10 +361,10 @@ function newSearchForm() {
 	const searchForm = document.querySelector(".search-form") as HTMLFormElement,
 		searchInput = searchForm.querySelector("input") as HTMLInputElement,
 		searchResultList = document.querySelector(
-			".search-result--list"
+			".search-result--list",
 		) as HTMLDivElement,
 		searchResultTitle = document.querySelector(
-			".search-result--title"
+			".search-result--title",
 		) as HTMLHeadingElement;
 
 	return new Search({
@@ -379,17 +378,20 @@ function newSearchForm() {
 
 const searchFormBinder = () => {
 	if (
-		document.querySelectorAll("body.template-search").length === 1 &&
+		document.querySelectorAll(".search-form").length !== 1 ||
+		window.searchForm
+	) {
+		console.log("searchForm is unbinded.");
+		window.searchForm.unbind();
+		delete window.searchForm;
+	}
+
+	if (
+		document.querySelectorAll(".search-form").length === 1 &&
 		!window.searchForm
 	) {
 		console.log("searchForm is binded.");
 		window.searchForm = newSearchForm();
-	}
-
-	if (document.querySelectorAll("body.template-search").length !== 1) {
-		console.log("searchForm is unbinded.");
-		window.searchForm.unbind();
-		delete window.searchForm;
 	}
 };
 
