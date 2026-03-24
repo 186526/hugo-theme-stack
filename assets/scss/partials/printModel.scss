@@ -1,5 +1,6 @@
 body {
-	--base-font-family: "Fira Sans", "Noto Serif SC", "Noto Color Emoji", serif !important;
+	--base-font-family:
+		"Fira Sans", "Noto Serif SC", "Noto Color Emoji", serif !important;
 	--article-font-size: 13pt !important;
 	--article-font-family: var(--base-font-family);
 	--body-background: white !important;
@@ -123,4 +124,76 @@ footer.site-footer:before {
 
 .article-toc > details > summary {
 	display: none !important;
+}
+
+.article-content code {
+	color: var(--card-text-color-main);
+}
+
+td.lntd {
+	font-size: clamp(1px, #{"min(1.8cqi, 2.2cqb)"}, 1em);
+	white-space: nowrap !important;
+	overflow: hidden !important;
+	text-overflow: clip;
+	max-width: 100%;
+	min-width: 0;
+	line-height: 1.2em;
+	border-right: 2px solid var(--accent-color) !important;
+	margin-right: 1em !important;
+}
+
+td.lntd:last-child {
+	width: 100%;
+	flex: 1 1 auto;
+	container-type: size;
+	overflow-x: hidden !important;
+	overflow-y: hidden !important;
+	border-right: none !important;
+}
+
+td.lntd:first-child {
+	flex: 0 0 auto;
+}
+
+.article-content pre,
+.article-content .highlight,
+.article-content .table-wrapper,
+.chroma .lntable > tbody > tr,
+.chroma .lntable > tbody > tr > td:last-child {
+	overflow-x: hidden !important;
+	max-width: 100% !important;
+}
+
+.article-content pre,
+.article-content .highlight {
+	width: 100% !important;
+	max-width: 100% !important;
+	margin-left: 0px !important;
+	margin-right: 0 !important;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+	box-sizing: border-box;
+}
+
+.article-content .highlight .chroma,
+.article-content .chroma .lntable {
+	width: 100% !important;
+	max-width: 100% !important;
+}
+
+.article-content .highlight {
+	padding-left: 20px !important;
+}
+
+.article-content {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+.article-content > * {
+	margin-left: 20px !important;
+}
+
+.chroma .lnt {
+	padding-left: 0 !important;
 }
