@@ -25,4 +25,9 @@
         </div>
         {{ partial "footer/include.html" . }}
     </body>
+    <script>
+        window.addEventListener('load', () => {
+            if (window.quicklink) quicklink.listen();
+        });
+    </script>
 </html>
