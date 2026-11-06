@@ -30,6 +30,8 @@ function checkURLPrintFlags() {
 
     if (params.has('print')) {
         handlePrintChange({ matches: true } as MediaQueryList, true);
+    } else {
+        handlePrintChange({ matches: false } as MediaQueryList);
     }
 
     if (params.has('withoutFooter')) {

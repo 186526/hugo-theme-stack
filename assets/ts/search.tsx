@@ -323,26 +323,42 @@ class Search {
 declare global {
     interface Window {
         searchResultTitleTemplate: string;
+        searchForm?: Search;
+        isSearchFormBinderUp?: boolean;
     }
 }
 
+function createSearchForm() {
+    const searchForm = document.querySelector('.search-form') as HTMLFormElement,
+        searchInput = searchForm?.querySelector('input') as HTMLInputElement,
+        searchResultList = document.querySelector('.search-result--list') as HTMLDivElement,
+        searchResultTitle = document.querySelector('.search-result--title') as HTMLHeadingElement;
+
+    if (!searchForm || !searchInput || !searchResultList || !searchResultTitle) return null;
+
+    return new Search({
+        form: searchForm,
+        input: searchInput,
+        list: searchResultList,
+        resultTitle: searchResultTitle,
+        resultTitleTemplate: window.searchResultTitleTemplate
+    });
+}
+
+function bindSearchForm() {
+    const searchForm = createSearchForm();
+    if (!searchForm) return;
+
+    window.searchForm = searchForm;
+}
+
+if (!window.isSearchFormBinderUp) {
+    document.addEventListener('pjax:content', bindSearchForm);
+    window.isSearchFormBinderUp = true;
+}
+
 window.addEventListener('load', () => {
-    setTimeout(function () {
-        const searchForm = document.querySelector('.search-form') as HTMLFormElement,
-            searchInput = searchForm?.querySelector('input') as HTMLInputElement,
-            searchResultList = document.querySelector('.search-result--list') as HTMLDivElement,
-            searchResultTitle = document.querySelector('.search-result--title') as HTMLHeadingElement;
-
-        if (!searchForm || !searchInput || !searchResultList || !searchResultTitle) return;
-
-        new Search({
-            form: searchForm,
-            input: searchInput,
-            list: searchResultList,
-            resultTitle: searchResultTitle,
-            resultTitleTemplate: window.searchResultTitleTemplate
-        });
-    }, 0);
+    setTimeout(bindSearchForm, 0);
 })
 
 export default Search;
