@@ -1,4 +1,6 @@
 public
 resources
+.cache
+node_modules
 assets/jsconfig.json
 .hugo_build.lock

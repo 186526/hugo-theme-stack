@@ -9,7 +9,7 @@ defaultContentLanguage = "en"
 hasCJKLanguage         = false
 
 [[module.imports]]
-    path = "github.com/CaiJimmy/hugo-theme-stack/v3"
+    path = "github.com/CaiJimmy/hugo-theme-stack/v4"
 
 [pagination]
     pagerSize = 3
