@@ -21,8 +21,11 @@ const cachedOrigin = new RegExp(
 );
 const imageFile = /\.(?:png|jpe?g|gif|webp|avif|svg|ico)$/;
 const staticAsset = /\.(?:css|js|woff2?)$/;
+const dynamicShield = /^\/shields\.io\//;
 const pageNavigation = ({ request }) => request.mode === "navigate";
 const passthrough = /(?:google-analytics\.com|analytics\.google\.com|disqus)/;
+
+const sameOrigin = (url) => url.origin === self.location.origin;
 
 core.setCacheNameDetails({
 	prefix: "stack",
@@ -31,6 +34,10 @@ core.setCacheNameDetails({
 core.skipWaiting();
 core.clientsClaim();
 
+const activeCaches = new Set([pagesCache, imagesCache, immutableCache]);
+const managedCache =
+	/^(?:pages-v|images-v|static-immutable-v|static-immutable\/|blog-cache\/|stack-runtime-|disqus-)/;
+
 self.addEventListener("activate", (event) => {
 	event.waitUntil(
 		caches
@@ -38,8 +45,7 @@ self.addEventListener("activate", (event) => {
 			.then((keys) =>
 				Promise.all(
 					keys
-						.filter((key) => key.startsWith("stack-"))
-						.filter((key) => !key.endsWith(buildVersion))
+						.filter((key) => managedCache.test(key) && !activeCaches.has(key))
 						.map((key) => caches.delete(key))
 				)
 			)
@@ -87,10 +93,21 @@ routing.registerRoute(
 );
 
 /*
- * 本站图片先返回缓存，同时在后台更新。
+ * shields.io 徽章内容随时间变化，地址固定，不能进永久缓存。
+ * 这条必须排在图片规则之前，徽章地址同样以图片后缀结尾。
  */
 routing.registerRoute(
-	({ request, url }) => url.origin === self.location.origin && imageFile.test(url.pathname),
+	({ url }) => sameOrigin(url) && dynamicShield.test(url.pathname),
+	new NetworkOnly(),
+	"GET"
+);
+
+/*
+ * 本站图片先返回缓存，同时在后台更新。
+ * 图片地址不带内容哈希，换图后必须能刷新。
+ */
+routing.registerRoute(
+	({ url }) => sameOrigin(url) && imageFile.test(url.pathname),
 	new StaleWhileRevalidate({
 		cacheName: imagesCache,
 		plugins: [
@@ -107,7 +124,7 @@ routing.registerRoute(
  * 本站样式、脚本和字体文件名带内容哈希，缓存后不再更新。
  */
 routing.registerRoute(
-	({ request, url }) => url.origin === self.location.origin && staticAsset.test(url.pathname),
+	({ url }) => sameOrigin(url) && staticAsset.test(url.pathname),
 	new CacheFirst({
 		cacheName: immutableCache,
 		plugins: [
