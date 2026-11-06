@@ -1,0 +1,33 @@
+.showWhenPrint {
+	display: none;
+}
+
+.site-footer {
+	.site-avatar {
+		margin: 0 !important;
+		img {
+			border-radius: 100%;
+		}
+	}
+
+	.site-description {
+		color: var(--body-text-color);
+		font-weight: 400;
+		margin: 0;
+		font-size: 1.4rem;
+	}
+
+	.site-info {
+		margin-bottom: 10px;
+	}
+}
+
+.main-article .widget--toc {
+	margin-top: 20px;
+	box-shadow: none;
+	border-radius: 0px;
+}
+
+html[print-scheme=enable] {
+	@import "./partials/printModel.scss";
+}
