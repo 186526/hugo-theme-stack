@@ -8,6 +8,17 @@ SortBy         = "default"
 [footer]
     since      = 2026
     customText = ""
+    # Base URL of a shields.io compatible endpoint for the MoeICP, commit and
+    # latest-update badges. Leave empty to hide those badges.
+    shieldsBase = ""
+
+    # Optional attribution line for a fork of the theme.
+    # [footer.fork]
+    #     name = "Forked"
+    #     url  = "https://github.com/example/hugo-theme-stack"
+    #     [footer.fork.author]
+    #         name = "example"
+    #         url  = "https://example.com"
 
     [footer.moeICP]
         enabled = false

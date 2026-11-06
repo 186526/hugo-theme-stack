@@ -33,23 +33,38 @@
         {{- $DesignedBy := `<a href="https://jimmycai.com" target="_blank" rel="noopener">Jimmy</a>` -}}
 
         {{ T "footer.builtWith" (dict "Generator" $Generator) | safeHTML }} <br />
-        {{ T "footer.designedBy" (dict "Theme" $Theme "DesignedBy" $DesignedBy) | safeHTML }} <br />
-        <a href="https://github.com/186526/hugo-theme-stack" target="_blank" rel="noopener">Forked</a> with 💖 by <a
-            href="https://186526.xyz" target="_blank" rel="noopener">real186526</a>
-
-        <br><br>
+        {{ T "footer.designedBy" (dict "Theme" $Theme "DesignedBy" $DesignedBy) | safeHTML }}
+        {{- with .Site.Params.footer.fork }}
+        <br />
+        {{- $ForkName := default "Forked" .name -}}
+        {{- $ForkAuthorName := default "" .author.name -}}
+        {{- $ForkAuthor := $ForkAuthorName -}}
+        {{- with .url -}}
+            {{ $ForkName = printf `<a href="%s" target="_blank" rel="noopener">%s</a>` . $ForkName -}}
+        {{- end -}}
+        {{- with .author.url -}}
+            {{ $ForkAuthor = printf `<a href="%s" target="_blank" rel="noopener">%s</a>` . $ForkAuthorName -}}
+        {{- end -}}
+        {{ $ForkName | safeHTML }} with 💖 by {{ $ForkAuthor | safeHTML }}
+        {{- end }}
 
         {{ if .Site.Params.footer.moeICP.enabled }}
         {{- $MoeICP := .Site.Params.footer.moeICP.number -}}
+        {{- $ShieldsBase := .Site.Params.footer.shieldsBase -}}
+        <br />
         <a alt="Moe ICP {{ $MoeICP }}" href="https://icp.gov.moe/?keyword={{ $MoeICP }}" target="_blank"
             rel="noopener"><img alt="Moe ICP {{ $MoeICP }}" loading="lazy" decoding="async"
-                src="https://unpkg.assets.real186526.cn/shields.io/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
+                src="{{ $ShieldsBase }}/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
         {{ end }}
 
         {{ with .GitInfo }}
-            <img alt="Build Commit" loading="lazy" decoding="async" src="https://unpkg.assets.real186526.cn/shields.io/badge/commit-{{ .AbbreviatedHash }}-blue">
+            <br />
+            <img alt="Build Commit" loading="lazy" decoding="async" src="{{ $.Site.Params.footer.shieldsBase }}/badge/commit-{{ .AbbreviatedHash }}-blue">
         {{ end }}
 
-        <img alt="Latest Update" loading="lazy" decoding="async" src="https://unpkg.assets.real186526.cn/shields.io/date/{{ now.Unix }}?color=sucessful&label=latest%20update">
+        {{ with .Site.Params.footer.shieldsBase }}
+            <br />
+            <img alt="Latest Update" loading="lazy" decoding="async" src="{{ . }}/date/{{ now.Unix }}?color=sucessful&label=latest%20update">
+        {{ end }}
     </section>
 </footer>
