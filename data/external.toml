@@ -10,9 +10,9 @@ Cactus = [
 ]
 
 [PhotoSwipe]
-    Style    = "https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.css"
-    Core     = "https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.esm.min.js"
-    Lightbox = "https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js"
+    Style    = "https://unpkg.assets.real186526.cn/npm/photoswipe@5.4.4/dist/photoswipe.css"
+    Core     = "https://unpkg.assets.real186526.cn/npm/photoswipe@5.4.4/dist/photoswipe.esm.min.js"
+    Lightbox = "https://unpkg.assets.real186526.cn/npm/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.min.js"
 
 [Artalk]
     Style  = "https://cdn.jsdelivr.net/npm/artalk@2.9.1/dist/Artalk.css"
