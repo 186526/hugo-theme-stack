@@ -25,8 +25,30 @@
         </div>
         {{ partial "footer/include.html" . }}
     </body>
+    {{- $swVersion := now.Unix -}}
+    {{- $swJS := resources.Get "sw.js" | resources.ExecuteAsTemplate "sw.js" . | minify | resources.Fingerprint "sha512" -}}
     <script>
         window.addEventListener('load', () => {
+            const swVersion = '{{ $swVersion }}';
+            if ({{ hugo.IsServer | not }} && 'serviceWorker' in navigator && localStorage.getItem('sw.js-version') != swVersion) {
+                navigator.serviceWorker.register('{{ $swJS.RelPermalink }}', {
+                    scope: '/'
+                }).then(function (registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    localStorage.setItem('sw.js-version', swVersion);
+                }).catch(function (err) {
+                    console.warn('ServiceWorker registration failed: ', err);
+                });
+                let hadController = Boolean(navigator.serviceWorker.controller);
+                navigator.serviceWorker.addEventListener('controllerchange', function () {
+                    if (!hadController) {
+                        hadController = true;
+                        return;
+                    }
+                    const title = document.querySelector('title');
+                    title.innerText = 'Need update Service Worker - ' + title.innerText;
+                });
+            }
             if (window.quicklink) quicklink.listen();
         });
     </script>
