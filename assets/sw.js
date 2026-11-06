@@ -16,9 +16,13 @@ const buildVersion = `{{ now.Unix }}`,
 	oneMonth = 30 * 24 * 60 * 60,
 	maxEntries = 100;
 
-const cachedOrigin = new RegExp(
-	`^https://(?:unpkg\\.assets\\.real186526\\.cn|cdn\\.jsdelivr\\.net|fonts\\.googleapis\\.com|fonts\\.googleapis\\.cn|fonts\\.gstatic\\.com)/`
-);
+/*
+ * 第三方静态资源清单由站点参数 serviceWorker.cachedOrigins 提供，
+ * 未配置时只缓存 jsdelivr，避免主题写死某个站点的镜像域名。
+ */
+const configuredOrigins = {{ site.Params.serviceWorker.cachedOrigins | default (slice "cdn.jsdelivr.net") | jsonify }};
+const escapedOrigins = configuredOrigins.map((origin) => origin.replace(/\./g, "\\."));
+const cachedOrigin = new RegExp(`^https://(?:${escapedOrigins.join("|")})/`);
 const imageFile = /\.(?:png|jpe?g|gif|webp|avif|svg|ico)$/;
 const staticAsset = /\.(?:css|js|woff2?)$/;
 const dynamicShield = /^\/shields\.io\//;
@@ -35,8 +39,7 @@ core.skipWaiting();
 core.clientsClaim();
 
 const activeCaches = new Set([pagesCache, imagesCache, immutableCache]);
-const managedCache =
-	/^(?:pages-v|images-v|static-immutable-v|static-immutable\/|blog-cache\/|stack-runtime-|disqus-)/;
+const managedCache = /^(?:pages-v|images-v|static-immutable-v|static-immutable\/)/;
 
 self.addEventListener("activate", (event) => {
 	event.waitUntil(
