@@ -2,7 +2,7 @@
 <footer class="site-footer">
     <section class="showWhenPrint site-info">
         {{ with .Site.Params.sidebar.avatar }}
-        {{- $avatar := partial "helper/image" (dict "Image" . "Resources" resources "Context" $) -}}
+        {{- $avatar := partial "helper/avatar" (dict "Image" . "Width" 64) -}}
         <figure class="site-avatar">
             <a href="{{ $.Site.Home.RelPermalink }}">
                 <img src="{{ $avatar.Permalink }}" width="32" height="32" class="site-logo" loading="lazy" decoding="async" alt="Avatar">

@@ -1,0 +1,21 @@
+/// Params:
+///     Image: image path relative to assets
+///     Width: target display width in CSS pixels
+
+/// Returns:
+///     Permalink: URL of the resized image, or the original when it cannot be resized
+///     Width: rendered width
+///     Height: rendered height
+
+{{ $result := dict "Permalink" .Image "Width" nil "Height" nil }}
+
+{{ with resources.Get .Image }}
+    {{ if and (reflect.IsImageResourceProcessable .) (gt .Width $.Width) }}
+        {{ $resized := .Resize (printf "%dx webp q85" $.Width) }}
+        {{ $result = dict "Permalink" $resized.RelPermalink "Width" $resized.Width "Height" $resized.Height }}
+    {{ else }}
+        {{ $result = dict "Permalink" .RelPermalink "Width" .Width "Height" .Height }}
+    {{ end }}
+{{ end }}
+
+{{ return $result }}
