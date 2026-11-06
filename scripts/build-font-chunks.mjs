@@ -12,7 +12,7 @@ const MANIFEST_PATH = join(SCRIPT_DIR, "font-chunks.json");
 const PLACEHOLDER_PATH = join(SCRIPT_DIR, "..", "static", "fonts", "noto-sans-sc.css");
 
 const CHUNK_SIZE = 200;
-const RANGE_MERGE_GAP = 0;
+const RANGE_MERGE_GAP = 1;
 const LATIN_CHARACTERS = Array.from({ length: 0x7f - 0x20 }, (_, index) => String.fromCodePoint(index + 0x20));
 
 const FAMILIES = [
@@ -265,7 +265,10 @@ async function main() {
 			: assignCharactersToChunks(ranked, manifest[family.slug]?.chunks ?? []);
 		const { faces, totalBytes } = await buildFamily(family, chunks, sourceFont);
 
-		manifest[family.slug] = { chunks };
+		if (!family.characters) {
+			manifest[family.slug] = { chunks };
+		}
+
 		stylesheets[family.slug] = {
 			slug: family.slug,
 			name: writeStylesheet(family, faces),
