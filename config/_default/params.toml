@@ -9,6 +9,10 @@ SortBy         = "default"
     since      = 2026
     customText = ""
 
+    [footer.moeICP]
+        enabled = false
+        number  = ""
+
 [dateFormat]
     published   = ":date_full"
     lastUpdated = ":date_full"

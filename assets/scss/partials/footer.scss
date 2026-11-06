@@ -28,3 +28,24 @@ footer.site-footer {
         }
     }
 }
+
+footer.site-footer .showWhenPrint {
+    display: none;
+
+    .site-avatar {
+        margin: 0 0 var(--spacing-sm) 0;
+
+        .site-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 100%;
+        }
+    }
+
+    .site-description {
+        color: var(--body-text-color);
+        font-weight: normal;
+        margin: 0;
+        font-size: 1.4rem;
+    }
+}
