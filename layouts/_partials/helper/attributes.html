@@ -1,0 +1,8 @@
+{{- /* Renders a map of HTML attributes as a string, skipping empty values. */ -}}
+{{- $out := slice -}}
+{{- range $k, $v := . -}}
+    {{- if $v -}}
+        {{- $out = $out | append (printf " %s=%q" (lower $k) (printf "%v" $v) | safeHTMLAttr) -}}
+    {{- end -}}
+{{- end -}}
+{{- delimit $out "" | safeHTML -}}
