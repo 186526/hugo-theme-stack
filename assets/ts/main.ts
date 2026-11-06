@@ -12,6 +12,7 @@ import { setupScrollspy } from './scrollspy';
 import { setupSmoothAnchors } from './smoothAnchors';
 import { setupPaginationJump } from './pagination';
 import { setupCodeCopy } from './code-copy';
+import Pjax from './pjax';
 
 function handlePrintChange(event: MediaQueryListEvent | MediaQueryList, forceColorScheme: boolean = false) {
     const html = document.documentElement;
@@ -68,6 +69,7 @@ let Stack = {
 window.addEventListener('load', () => {
     setTimeout(function () {
         Stack.init();
+        new Pjax();
     }, 0);
 })
 
