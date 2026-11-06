@@ -10,11 +10,12 @@
             {{- $avatar := partial "helper/image" (dict "Image" . "Resources" resources "Context" $) -}}
             <figure class="site-avatar">
                 <a href="{{ $.Site.Home.RelPermalink }}">
-                    <img src="{{ $avatar.Permalink }}" 
+                    <img src="{{ $avatar.Permalink }}"
                         width="{{ $avatar.Width }}"
                         height="{{ $avatar.Height }}"
                         class="site-logo"
-                        loading="lazy"
+                        fetchpriority="high"
+                        decoding="async"
                         alt="Avatar">
                 </a>
                 {{ with $.Site.Params.sidebar.emoji }}
