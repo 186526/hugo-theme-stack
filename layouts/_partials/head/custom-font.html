@@ -1,14 +1,5 @@
-{{- $weights := slice 400 700 -}}
-{{- $faces := slice -}}
-{{- range $weights -}}
-    {{- $weight := . -}}
-    {{- with resources.Get (printf "fonts/lato-%d.woff2" $weight) -}}
-        {{- $faces = $faces | append (printf "@font-face{font-family:Lato;font-style:normal;font-weight:%d;font-display:swap;src:url(%s) format(\"woff2\")}" $weight .RelPermalink) -}}
-    {{- end -}}
-{{- end -}}
-{{- with resources.Get "fonts/lato-400.woff2" -}}
-<link rel="preload" href="{{ .RelPermalink }}" as="font" type="font/woff2" crossorigin>
-{{- end -}}
-{{- with $faces -}}
-<style>{{ delimit . "" | safeCSS }}</style>
-{{- end -}}
+<link rel="preconnect" href="https://fonts.googleapis.cn">
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
+<link href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@300..700&family=Inter:wght@100..900&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/fonts/noto-sans-sc.css">
+<link rel="stylesheet" href="/fonts/noto-serif-sc.css" media="print">
