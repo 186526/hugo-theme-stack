@@ -1,4 +1,10 @@
-{{- partial "helper/external" (dict "Context" . "Namespace" "KaTeX") -}}
+{{- /* Publishes KaTeX fonts referenced by the bundled stylesheet. */ -}}
+{{- range resources.Match "vendor/katex/fonts/*.woff2" -}}
+    {{- .Publish -}}
+{{- end -}}
+{{- partial "helper/local-asset" "vendor/katex/katex.min.css" -}}
+{{- partial "helper/local-asset" "vendor/katex/katex.min.js" -}}
+{{- partial "helper/local-asset" "vendor/katex/contrib/auto-render.min.js" -}}
 <script>
     window.addEventListener("DOMContentLoaded", () => {
         const elementsToRender = [".main-article", ".widget--toc"];

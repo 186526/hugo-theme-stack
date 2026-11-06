@@ -2,8 +2,9 @@
 {{- $disqusjs := .Site.Params.Comments.disqusjs -}}
 {{- if and (not $pc.Disable) (and $disqusjs.Shortname $disqusjs.ApiKey) -}}
 
-{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | toCSS | minify -}}
-<link rel="stylesheet" href="{{ $style.RelPermalink }}">
+{{- $style := resources.Get "scss/partials/comments/disqusjs.scss" | toCSS | minify | fingerprint -}}
+<link rel="stylesheet" href="{{ $style.RelPermalink }}" integrity="{{ $style.Data.Integrity }}">
+{{- $script := resources.Get "vendor/disqusjs/disqus.min.js" | fingerprint -}}
 
 <div class="disqus-container">
     <div id="disqus_thread"></div>
@@ -30,11 +31,11 @@
                 return;
             }
 
-            let d = document.createElement('script');
-            d.src = 'https://cdn.jsdelivr.net/npm/disqusjs@1.3/dist/disqus.js';
-            d.async = false;
-            document.body.appendChild(d);
-            d.onload = () => {
+            const script = document.createElement('script');
+            script.src = {{ $script.RelPermalink }};
+            script.integrity = {{ $script.Data.Integrity }};
+            script.async = false;
+            script.onload = () => {
                 loadDisqusJS();
                 window.addEventListener('onColorSchemeChange', (e) => {
                     if (disqusjs) {
@@ -42,6 +43,7 @@
                     }
                 })
             }
+            document.body.appendChild(script);
         }
 
         let runningOnBrowser = typeof window !== "undefined";

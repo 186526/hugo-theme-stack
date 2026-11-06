@@ -1,0 +1,13 @@
+{{- /* Renders a bundled asset from the site's assets/ directory. */ -}}
+{{- $path := . -}}
+{{- with resources.Get $path -}}
+    {{- if eq .MediaType.SubType "css" -}}
+        {{- $css := . | fingerprint -}}
+        <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">
+    {{- else -}}
+        {{- $js := . | fingerprint -}}
+        <script src="{{ $js.RelPermalink }}" integrity="{{ $js.Data.Integrity }}" defer></script>
+    {{- end -}}
+{{- else -}}
+    {{- errorf "Error: bundled asset %q is not found under 'assets'" $path -}}
+{{- end -}}
