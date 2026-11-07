@@ -8,18 +8,21 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = resolve(process.env.FONT_CHUNK_PUBLIC_DIR ?? "public");
 const FONT_DIR = join(PUBLIC_DIR, "fonts");
 const CACHE_DIR = resolve(process.env.FONT_CHUNK_CACHE_DIR ?? ".cache");
-const MANIFEST_PATH = join(SCRIPT_DIR, "font-chunks.json");
+const COMMON_HANZI_PATH = join(SCRIPT_DIR, "common-hanzi.txt");
 const PLACEHOLDER_PATH = join(SCRIPT_DIR, "..", "static", "fonts", "noto-sans-sc.css");
 
-const CHUNK_SIZE = 200;
-const RANGE_MERGE_GAP = 1;
+const RANGE_MERGE_GAP = 4;
+const COMMON_CHUNKS = 3;
 const LATIN_CHARACTERS = Array.from({ length: 0x7f - 0x20 }, (_, index) => String.fromCodePoint(index + 0x20));
+const CJK_PUNCTUATION = "，。、（）「」『』“”‘’…：；？！《》【】——··～";
 
 const FAMILIES = [
 	{
 		cssFamily: "Noto Sans SC",
 		slug: "noto-sans-sc",
 		weights: [400, 700],
+		chunks: 3,
+		characters: CJK_PUNCTUATION,
 		sourceUrl:
 			"https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf",
 	},
@@ -27,6 +30,8 @@ const FAMILIES = [
 		cssFamily: "Noto Serif SC",
 		slug: "noto-serif-sc",
 		weights: [400, 700],
+		chunks: 3,
+		characters: CJK_PUNCTUATION,
 		sourceUrl:
 			"https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Serif/Variable/TTF/Subset/NotoSerifSC-VF.ttf",
 	},
@@ -110,28 +115,20 @@ function collectCharacterFrequency(directory) {
 	return frequency;
 }
 
-function loadManifest() {
-	if (!existsSync(MANIFEST_PATH)) {
-		return {};
-	}
-
-	const manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
-	return manifest.chunks ? { "noto-sans-sc": manifest } : manifest;
+function buildCjkChunks(family, siteCharacters, commonCharacters) {
+	return [
+		...splitIntoChunks(siteCharacters, family.chunks),
+		...splitIntoChunks(commonCharacters, COMMON_CHUNKS),
+		[family.characters],
+	];
 }
 
-function assignCharactersToChunks(characters, publishedChunks) {
-	const chunks = publishedChunks.map((chunk) => [...chunk]);
-	const assigned = new Set(chunks.flat());
-	const pending = characters.filter((character) => !assigned.has(character));
+function splitIntoChunks(characters, count) {
+	const size = Math.ceil(characters.length / count);
+	const chunks = [];
 
-	for (const character of pending) {
-		const openChunk = chunks.find((chunk) => chunk.length < CHUNK_SIZE);
-
-		if (openChunk) {
-			openChunk.push(character);
-		} else {
-			chunks.push([character]);
-		}
+	for (let index = 0; index < characters.length; index += size) {
+		chunks.push(characters.slice(index, index + size));
 	}
 
 	return chunks;
@@ -252,7 +249,8 @@ function writePlaceholder() {
 async function main() {
 	const frequency = collectCharacterFrequency(PUBLIC_DIR);
 	const ranked = [...frequency.entries()].sort((a, b) => b[1] - a[1]).map(([character]) => character);
-	const manifest = loadManifest();
+	const commonHanzi = [...new Set([...readFileSync(COMMON_HANZI_PATH, "utf8").replace(/\s/g, "")])];
+	const commonOnly = commonHanzi.filter((character) => !frequency.has(character));
 
 	mkdirSync(FONT_DIR, { recursive: true });
 
@@ -260,14 +258,10 @@ async function main() {
 
 	for (const family of FAMILIES) {
 		const sourceFont = await loadSourceFont(family);
-		const chunks = family.characters
-			? [family.characters]
-			: assignCharactersToChunks(ranked, manifest[family.slug]?.chunks ?? []);
+		const chunks = family.chunks
+			? buildCjkChunks(family, ranked, commonOnly)
+			: [family.characters];
 		const { faces, totalBytes } = await buildFamily(family, chunks, sourceFont);
-
-		if (!family.characters) {
-			manifest[family.slug] = { chunks };
-		}
 
 		stylesheets[family.slug] = {
 			slug: family.slug,
@@ -277,8 +271,6 @@ async function main() {
 			totalBytes,
 		};
 	}
-
-	writeFileSync(MANIFEST_PATH, `${JSON.stringify(manifest, null, "\t")}\n`);
 
 	rewriteStylesheetReferences(
 		PUBLIC_DIR,
