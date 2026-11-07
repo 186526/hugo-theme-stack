@@ -11,6 +11,9 @@ declare global {
 			inc: () => void;
 			done: () => void;
 		};
+		quicklink?: {
+			listen: (options?: Record<string, unknown>) => () => void;
+		};
 	}
 }
 
@@ -22,6 +25,7 @@ window['NProgress'] = nprogress;
 
 export default class Pjax {
 	public pjaxInstance: any;
+	private stopPrefetching?: () => void;
 	constructor() {
 		if (window["pjax-api"] == undefined) {
 			console.error("pjax-api lib not loaded.");
@@ -43,11 +47,17 @@ export default class Pjax {
 			},
 		});
 		window.addEventListener("pjax:fetch", () => {
+			this.stopPrefetching?.();
 			window.NProgress.inc();
 		});
 		document.addEventListener("pjax:ready", () => {
 			window.Stack.init();
+			this.listenQuicklink();
 			window.NProgress.done();
 		});
+		this.listenQuicklink();
+	}
+	private listenQuicklink() {
+		this.stopPrefetching = window.quicklink?.listen({ priority: true });
 	}
 }
