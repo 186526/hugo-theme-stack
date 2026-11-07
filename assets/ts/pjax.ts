@@ -48,6 +48,9 @@ export default class Pjax {
 		});
 		window.addEventListener("pjax:fetch", () => {
 			this.stopPrefetching?.();
+			this.stopPrefetching = undefined;
+			document.body.classList.remove("show-menu");
+			document.getElementById("toggle-menu")?.classList.remove("is-active");
 			window.NProgress.inc();
 		});
 		document.addEventListener("pjax:ready", () => {
@@ -58,6 +61,13 @@ export default class Pjax {
 		this.listenQuicklink();
 	}
 	private listenQuicklink() {
-		this.stopPrefetching = window.quicklink?.listen();
+		this.stopPrefetching = window.quicklink?.listen({
+			/* 跳过当前页、新窗口打开的链接与订阅文件，预取它们不会在导航时被使用 */
+			ignores: [
+				(href: string) => href === location.href,
+				(a: HTMLAnchorElement) => a.target === "_blank",
+				(href: string) => /\.xml(\?|$)/.test(href),
+			],
+		});
 	}
 }
