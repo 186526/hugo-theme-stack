@@ -58,6 +58,6 @@ export default class Pjax {
 		this.listenQuicklink();
 	}
 	private listenQuicklink() {
-		this.stopPrefetching = window.quicklink?.listen({ priority: true });
+		this.stopPrefetching = window.quicklink?.listen();
 	}
 }

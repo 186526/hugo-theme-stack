@@ -62,6 +62,8 @@ url = "https://example.com"
 
 `assets/sw.js` 从 `serviceWorker.cachedOrigins` 读取需要永久缓存的第三方资源域名，未配置时只缓存 `cdn.jsdelivr.net`。
 
+quicklink 用 `link rel=prefetch` 预加载视口内的站内链接，service worker 接住这些请求并写入 `pages` 缓存；PJAX 点击时从 `pages` 缓存取页面，同时后台请求网络更新缓存，离线时也能继续站内跳转。
+
 ```toml
 [serviceWorker]
 cachedOrigins = ["cdn.jsdelivr.net", "fonts.googleapis.com"]

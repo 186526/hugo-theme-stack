@@ -21,6 +21,12 @@ const buildVersion = `{{ now.Unix }}`,
  */
 const immutableCache = "static-immutable-v1";
 
+const pageExpiration = new ExpirationPlugin({
+	maxEntries: 32,
+	maxAgeSeconds: oneMonth,
+	purgeOnQuotaError: true,
+});
+
 /*
  * 第三方静态资源清单由站点参数 serviceWorker.cachedOrigins 提供，
  * 未配置时只缓存 jsdelivr，避免主题写死某个站点的镜像域名。
@@ -32,6 +38,9 @@ const imageFile = /\.(?:png|jpe?g|gif|webp|avif|svg|ico)$/;
 const staticAsset = /\.(?:css|js|woff2?)$/;
 const dynamicShield = /^\/shields\.io\//;
 const pageNavigation = ({ request }) => request.mode === "navigate";
+const pagePrefetch = ({ request }) =>
+	request.headers.get("purpose") === "prefetch" || request.headers.get("sec-purpose") === "prefetch";
+const pagePjax = ({ request }) => request.method === "GET" && request.headers.get("x-pjax") === "1";
 const passthrough = /(?:google-analytics\.com|analytics\.google\.com|disqus)/;
 
 const sameOrigin = (url) => url.origin === self.location.origin;
@@ -62,20 +71,39 @@ self.addEventListener("activate", (event) => {
 
 /*
  * 页面导航始终先请求网络，离线时回退到最近一次成功加载的页面。
- * PJAX 发出的 XHR 不是 navigate 模式，因此永远拿不到缓存里的旧文档。
+ * PJAX 发出的 XHR 不是 navigate 模式，命中与否取决于下面的预加载规则。
  */
 routing.registerRoute(
 	pageNavigation,
 	new NetworkFirst({
 		cacheName: pagesCache,
 		networkTimeoutSeconds: 3,
-		plugins: [
-			new ExpirationPlugin({
-				maxEntries: 32,
-				maxAgeSeconds: oneMonth,
-				purgeOnQuotaError: true,
-			}),
-		],
+		plugins: [pageExpiration],
+	})
+);
+
+/*
+ * quicklink 用 link rel=prefetch 预加载页面，浏览器发出的预加载请求带 purpose 请求头，
+ * fetch 无法自行加这个头，所以这里的匹配只命中预加载。
+ * 预加载结果写进 pages 缓存，之后 PJAX 的 XHR 与页面导航都能直接命中。
+ */
+routing.registerRoute(
+	pagePrefetch,
+	new NetworkFirst({
+		cacheName: pagesCache,
+		plugins: [pageExpiration],
+	})
+);
+
+/*
+ * PJAX 的 XHR 先读 pages 缓存，同时请求网络并在成功后更新缓存。
+ * 预加载过的页面点击时直接使用缓存，网络断开时也能继续浏览。
+ */
+routing.registerRoute(
+	pagePjax,
+	new StaleWhileRevalidate({
+		cacheName: pagesCache,
+		plugins: [pageExpiration],
 	})
 );
 
