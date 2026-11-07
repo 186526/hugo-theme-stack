@@ -9,9 +9,12 @@ const { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } =
 	strategies;
 const { ExpirationPlugin } = expiration;
 
-const buildVersion = `{{ now.Unix }}`,
-	pagesCache = `pages-v${buildVersion}`,
-	imagesCache = `images-v${buildVersion}`,
+/*
+ * 缓存名不随构建时间变化，否则每次部署都会丢掉页面与图片缓存并重新下载。
+ * 图片与页面由 ExpirationPlugin 按时间淘汰，样式脚本字体在 immutableCache 里长期保留。
+ */
+const pagesCache = "pages-v1",
+	imagesCache = "images-v1",
 	oneMonth = 30 * 24 * 60 * 60,
 	maxEntries = 100;
 
@@ -47,7 +50,7 @@ const sameOrigin = (url) => url.origin === self.location.origin;
 
 core.setCacheNameDetails({
 	prefix: "stack",
-	suffix: buildVersion,
+	suffix: "v1",
 });
 core.skipWaiting();
 core.clientsClaim();
@@ -86,12 +89,14 @@ routing.registerRoute(
  * quicklink 用 link rel=prefetch 预加载页面，浏览器发出的预加载请求带 purpose 请求头，
  * fetch 无法自行加这个头，所以这里的匹配只命中预加载。
  * 预加载结果写进 pages 缓存，之后 PJAX 的 XHR 与页面导航都能直接命中。
+ * ignoreVary 让带 purpose 头的预加载与不带该头的导航、XHR 共用同一条缓存记录。
  */
 routing.registerRoute(
 	pagePrefetch,
 	new NetworkFirst({
 		cacheName: pagesCache,
 		plugins: [pageExpiration],
+		matchOptions: { ignoreVary: true },
 	})
 );
 

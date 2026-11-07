@@ -25,17 +25,14 @@
         </div>
         {{ partial "footer/include.html" . }}
     </body>
-    {{- $swVersion := now.Unix -}}
     {{- $swJS := resources.Get "sw.js" | resources.ExecuteAsTemplate "sw.js" . | minify | resources.Fingerprint "sha512" -}}
     <script>
         window.addEventListener('load', () => {
-            const swVersion = '{{ $swVersion }}';
-            if ({{ hugo.IsServer | not }} && 'serviceWorker' in navigator && localStorage.getItem('sw.js-version') != swVersion) {
+            if ({{ hugo.IsServer | not }} && 'serviceWorker' in navigator) {
                 navigator.serviceWorker.register('{{ $swJS.RelPermalink }}', {
                     scope: '/'
                 }).then(function (registration) {
                     console.log('ServiceWorker registration successful with scope: ', registration.scope);
-                    localStorage.setItem('sw.js-version', swVersion);
                 }).catch(function (err) {
                     console.warn('ServiceWorker registration failed: ', err);
                 });
