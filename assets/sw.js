@@ -10,11 +10,16 @@ const { CacheFirst, NetworkFirst, NetworkOnly, StaleWhileRevalidate } =
 const { ExpirationPlugin } = expiration;
 
 const buildVersion = `{{ now.Unix }}`,
-	immutableCache = `static-immutable-v${buildVersion}`,
 	pagesCache = `pages-v${buildVersion}`,
 	imagesCache = `images-v${buildVersion}`,
 	oneMonth = 30 * 24 * 60 * 60,
 	maxEntries = 100;
+
+/*
+ * 样式、脚本与字体的文件名带内容哈希，部署后不会变，缓存名也就不随构建变化。
+ * 旧版本留下的条目由 ExpirationPlugin 按时间淘汰。
+ */
+const immutableCache = "static-immutable-v1";
 
 /*
  * 第三方静态资源清单由站点参数 serviceWorker.cachedOrigins 提供，
