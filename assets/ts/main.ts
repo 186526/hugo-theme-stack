@@ -13,6 +13,7 @@ import { setupSmoothAnchors } from './smoothAnchors';
 import { setupPaginationJump } from './pagination';
 import { setupCodeCopy } from './code-copy';
 import Pjax from './pjax';
+import { reportPageDetails } from './pageDetails';
 
 function handlePrintChange(event: MediaQueryListEvent | MediaQueryList, forceColorScheme: boolean = false) {
     const html = document.documentElement;
@@ -73,6 +74,8 @@ window.addEventListener('load', () => {
         Stack.init();
         new Pjax();
     }, 0);
+
+    setTimeout(reportPageDetails, 3000);
 })
 
 declare global {
