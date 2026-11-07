@@ -11,10 +11,9 @@ const CACHE_DIR = resolve(process.env.FONT_CHUNK_CACHE_DIR ?? ".cache");
 const COMMON_HANZI_PATH = join(SCRIPT_DIR, "common-hanzi.txt");
 const PLACEHOLDER_PATH = join(SCRIPT_DIR, "..", "static", "fonts", "noto-sans-sc.css");
 
-const RANGE_MERGE_GAP = 4;
 const COMMON_CHUNKS = 3;
 const LATIN_CHARACTERS = Array.from({ length: 0x7f - 0x20 }, (_, index) => String.fromCodePoint(index + 0x20));
-const CJK_PUNCTUATION = "，。、（）「」『』“”‘’…：；？！《》【】——··～";
+const CJK_PUNCTUATION = [...new Set("，。、（）「」『』“”‘’…：；？！《》【】—·～")];
 
 const FAMILIES = [
 	{
@@ -119,7 +118,7 @@ function buildCjkChunks(family, siteCharacters, commonCharacters) {
 	return [
 		...splitIntoChunks(siteCharacters, family.chunks),
 		...splitIntoChunks(commonCharacters, COMMON_CHUNKS),
-		[family.characters],
+		family.characters,
 	];
 }
 
@@ -134,17 +133,13 @@ function splitIntoChunks(characters, count) {
 	return chunks;
 }
 
-function buildUnicodeRange(characters) {
-	const codes = characters
-		.map((character) => character.codePointAt(0))
-		.sort((a, b) => a - b);
-
+function buildUnicodeRange(codes) {
 	const ranges = [];
 	let start = codes[0];
 	let end = codes[0];
 
 	for (const code of codes.slice(1)) {
-		if (code - end <= RANGE_MERGE_GAP) {
+		if (code - end === 1) {
 			end = code;
 			continue;
 		}
@@ -158,11 +153,11 @@ function buildUnicodeRange(characters) {
 
 	return ranges
 		.map(([from, to]) => (from === to ? `U+${from.toString(16).toUpperCase()}` : `U+${from.toString(16).toUpperCase()}-${to.toString(16).toUpperCase()}`))
-		.join(", ");
+		.join(",");
 }
 
 function fingerprint(characters) {
-	return createHash("sha256").update(characters.join("")).digest("hex").slice(0, 12);
+	return createHash("sha256").update([...characters].sort().join("")).digest("hex").slice(0, 12);
 }
 
 async function buildFamily(family, chunks, sourceFont) {
@@ -175,7 +170,7 @@ async function buildFamily(family, chunks, sourceFont) {
 		}
 
 		const hash = fingerprint(characters);
-		const unicodeRange = buildUnicodeRange(characters);
+		const unicodeRange = buildUnicodeRange(characters.map((character) => character.codePointAt(0)).sort((a, b) => a - b));
 
 		for (const weight of family.weights) {
 			const fileName = `${family.slug}-${index}-${weight}-${hash}.woff2`;
@@ -197,7 +192,7 @@ async function buildFamily(family, chunks, sourceFont) {
 }
 
 function writeStylesheet(family, faces) {
-	const stylesheet = `${faces.join("\n")}\n`;
+	const stylesheet = `${faces.reverse().join("\n")}\n`;
 	const hash = createHash("sha256").update(stylesheet).digest("hex").slice(0, 12);
 	const fingerprinted = `${family.slug}.${hash}.css`;
 

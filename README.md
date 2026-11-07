@@ -34,12 +34,12 @@ node themes/stack/scripts/build-font-chunks.mjs
 脚本把 Inter、Fira Code 按 ASCII 裁剪成单块，把 Noto Sans SC、Noto Serif SC 切成七块，每种字重各一份，写入 `public/fonts/`。中文块的分组如下：
 
 - 第 0 到 2 块：`public/` 里所有页面出现的汉字，按出现次数从多到少排序后三等分。
-- 第 3 到 5 块：`scripts/common-hanzi.txt` 里的常用汉字中，站点页面没有用到的部分，三等分。写新文章时常用字不必回退到系统字体。
+- 第 3 到 5 块：`scripts/common-hanzi.txt` 里的常用汉字中，站点页面没有用到的部分，三等分。
 - 第 6 块：全角标点。
 
-`unicode-range` 里相邻码位相差不超过 4 的区间会合并，合并出的码位可能同时落在别的块里，浏览器取先声明的 `@font-face`。输出文件名带内容哈希，字表与字体不变时哈希不变。`static/fonts/noto-sans-sc.css` 是构建前的占位文件，脚本每次运行都会重写它。
+`unicode-range` 只合并连续码位，块与块之间不重叠。`@font-face` 按块号从大到小声明，同权重时块号小的规则最后声明。按 CSS Fonts 4 第 4.5.1 节，重叠时后声明的规则优先，这样同权重下块 0 优先于块 3 到 5。输出文件名带内容哈希，块内字符集合不变时哈希不变。`static/fonts/noto-sans-sc.css` 是构建前的占位文件，脚本每次运行都会重写它。
 
-环境变量 `FONT_CHUNK_PUBLIC_DIR` 与 `FONT_CHUNK_CACHE_DIR` 分别覆盖输出目录与缓存目录，默认 `public` 与 `.cache`。Inter 与 Fira Code 的源文件在 `assets/fonts/`，Noto 字体与 Google Fonts 的分块 CSS 从 `scripts/build-font-chunks.mjs` 里的 `sourceUrl` 下载并缓存。
+环境变量 `FONT_CHUNK_PUBLIC_DIR` 与 `FONT_CHUNK_CACHE_DIR` 分别覆盖输出目录与缓存目录，默认 `public` 与 `.cache`。Inter 与 Fira Code 的源文件在 `assets/fonts/`，Noto 字体从 `scripts/build-font-chunks.mjs` 里的 `sourceUrl` 下载并缓存。
 
 ## Footer
 
