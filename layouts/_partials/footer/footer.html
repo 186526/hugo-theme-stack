@@ -48,10 +48,12 @@
         {{ $ForkName | safeHTML }} with 💖 by {{ $ForkAuthor | safeHTML }}
         {{- end }}
 
+        {{- if or .Site.Params.footer.moeICP.enabled .Site.Params.footer.shieldsBase }}
+        <br /><br />
+        {{- end }}
         {{ if .Site.Params.footer.moeICP.enabled }}
         {{- $MoeICP := .Site.Params.footer.moeICP.number -}}
         {{- $ShieldsBase := .Site.Params.footer.shieldsBase -}}
-        <br />
         <a alt="Moe ICP {{ $MoeICP }}" href="https://icp.gov.moe/?keyword={{ $MoeICP }}" target="_blank"
             rel="noopener"><img alt="Moe ICP {{ $MoeICP }}" loading="lazy" decoding="async"
                 src="{{ $ShieldsBase }}/badge/%E8%90%8CICP%E5%A4%87-{{ $MoeICP }}-blue"></a>
