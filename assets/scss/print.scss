@@ -1,5 +1,9 @@
 @use "partials/printModel";
 
+html[print-scheme=enable] {
+	@include printModel.styles;
+}
+
 .showWhenPrint {
 	display: none;
 }
@@ -29,3 +33,4 @@
 	box-shadow: none;
 	border-radius: 0px;
 }
+
