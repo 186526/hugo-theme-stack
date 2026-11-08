@@ -4,13 +4,14 @@ Params:
     Widths: Slice of widths to generate for srcset
     Attributes: Map of HTML attributes for the <img> tag
 
-Emits a <picture> element with a WebP source and the original format as fallback
-when the resource can be processed; otherwise emits a plain <img>.
+Emits a <picture> element with AVIF and WebP sources plus the original format
+as fallback when the resource can be processed; otherwise emits a plain <img>.
 */ -}}
 
 {{- $resource := .Resource -}}
 {{- $widths := .Widths -}}
 {{- $attributes := .Attributes | default dict -}}
+{{- $avifSrcset := slice -}}
 {{- $webpSrcset := slice -}}
 {{- $originalSrcset := slice -}}
 
@@ -19,16 +20,16 @@ when the resource can be processed; otherwise emits a plain <img>.
         {{- if lt . $resource.Width -}}
             {{- $resized := $resource.Resize (printf "%dx" .) -}}
             {{- $originalSrcset = $originalSrcset | append (printf "%s %dw" $resized.RelPermalink .) -}}
-            {{- $webp := $resized.Process "webp q82" -}}
-            {{- $webpSrcset = $webpSrcset | append (printf "%s %dw" $webp.RelPermalink .) -}}
+            {{- $avifSrcset = $avifSrcset | append (printf "%s %dw" ($resized.Process "avif q50").RelPermalink .) -}}
+            {{- $webpSrcset = $webpSrcset | append (printf "%s %dw" ($resized.Process "webp q82").RelPermalink .) -}}
         {{- end -}}
     {{- end -}}
 
     {{- if gt (len $originalSrcset) 0 -}}
         {{- $permalink := default $resource.RelPermalink (index $attributes "src") -}}
-        {{- $fullWebp := $resource.Process "webp q82" -}}
         {{- $originalSrcset = $originalSrcset | append (printf "%s %dw" $permalink $resource.Width) -}}
-        {{- $webpSrcset = $webpSrcset | append (printf "%s %dw" $fullWebp.RelPermalink $resource.Width) -}}
+        {{- $avifSrcset = $avifSrcset | append (printf "%s %dw" ($resource.Process "avif q50").RelPermalink $resource.Width) -}}
+        {{- $webpSrcset = $webpSrcset | append (printf "%s %dw" ($resource.Process "webp q82").RelPermalink $resource.Width) -}}
         {{- $attributes = merge $attributes (dict "srcset" (delimit $originalSrcset ", ")) -}}
     {{- end -}}
 {{- end -}}
@@ -37,6 +38,7 @@ when the resource can be processed; otherwise emits a plain <img>.
 
 {{- if gt (len $webpSrcset) 0 -}}
 <picture>
+    <source type="image/avif" srcset="{{ delimit $avifSrcset ", " }}" sizes="{{ index $attributes "sizes" }}">
     <source type="image/webp" srcset="{{ delimit $webpSrcset ", " }}" sizes="{{ index $attributes "sizes" }}">
     {{ $img | safeHTML }}
 </picture>
