@@ -17,12 +17,16 @@ import { reportPageDetails } from './pageDetails';
 
 function handlePrintChange(event: MediaQueryListEvent | MediaQueryList, forceColorScheme: boolean = false) {
     const html = document.documentElement;
+    const serifStylesheet = document.querySelector<HTMLLinkElement>('link[data-print-font]');
 
     if (event.matches) {
         if (forceColorScheme) html.setAttribute('data-scheme', 'light');
         html.setAttribute('print-scheme', 'enable');
+        /* 字体表只在打印媒体下注册 @font-face，?print 仍处于屏幕媒体，需要手动放开 */
+        if (serifStylesheet) serifStylesheet.media = 'all';
     } else {
         html.setAttribute('print-scheme', 'disable');
+        if (serifStylesheet) serifStylesheet.media = 'print';
     }
 }
 
