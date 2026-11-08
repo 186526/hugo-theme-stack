@@ -26,6 +26,12 @@ footer.site-footer {
         a {
             color: var(--body-text-color);
         }
+
+        /* 徽章图片加载前高度为 0，基线对齐会挤进上一行 */
+        img {
+            height: 20px;
+            vertical-align: middle;
+        }
     }
 }
 
