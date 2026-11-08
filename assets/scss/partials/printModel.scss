@@ -1,7 +1,6 @@
 @mixin styles {
 	body {
-		--base-font-family:
-			"Noto Serif SC", "Noto Color Emoji", serif !important;
+		--base-font-family: "Noto Serif SC", serif !important;
 		--article-font-size: 13pt !important;
 		--article-font-family: var(--base-font-family);
 		--body-background: white !important;

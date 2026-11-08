@@ -13,7 +13,7 @@ const PLACEHOLDER_PATH = join(SCRIPT_DIR, "..", "static", "fonts", "noto-sans-sc
 
 const COMMON_CHUNKS = 3;
 const LATIN_CHARACTERS = Array.from({ length: 0x7f - 0x20 }, (_, index) => String.fromCodePoint(index + 0x20));
-const CJK_PUNCTUATION = [...new Set("，。、（）「」『』“”‘’…：；？！《》【】—·～")];
+const CJK_PUNCTUATION = [...new Set("，。、（）「」『』“”‘’…：；？！《》【】—·～©")];
 
 const FAMILIES = [
 	{
@@ -21,7 +21,7 @@ const FAMILIES = [
 		slug: "noto-sans-sc",
 		weights: [400, 700],
 		chunks: 3,
-		characters: CJK_PUNCTUATION,
+		characters: [...LATIN_CHARACTERS, ...CJK_PUNCTUATION],
 		sourceUrl:
 			"https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Sans/Variable/TTF/Subset/NotoSansSC-VF.ttf",
 	},
@@ -30,7 +30,7 @@ const FAMILIES = [
 		slug: "noto-serif-sc",
 		weights: [400, 700],
 		chunks: 3,
-		characters: CJK_PUNCTUATION,
+		characters: [...LATIN_CHARACTERS, ...CJK_PUNCTUATION],
 		sourceUrl:
 			"https://raw.githubusercontent.com/googlefonts/noto-cjk/main/Serif/Variable/TTF/Subset/NotoSerifSC-VF.ttf",
 	},
