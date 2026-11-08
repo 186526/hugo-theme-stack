@@ -6,7 +6,7 @@ body {
 	--body-background: white !important;
 }
 
-&[data-scheme="dark"] body {
+html[print-scheme=enable][data-scheme="dark"] body {
 	--body-background: #303030 !important;
 }
 

@@ -1,3 +1,5 @@
+@use "../breakpoints" as bp;
+@use "../mixins";
 .widget {
     display: flex;
     flex-direction: column;
@@ -20,7 +22,7 @@
         gap: var(--spacing-sm);
 
         a {
-            @include card-style;
+            @include mixins.card-style;
             border-radius: var(--tag-border-radius);
             padding: 8px 20px;
             color: var(--card-text-color-main);
@@ -37,7 +39,7 @@
 /* Archives widget */
 .widget.archives {
     .widget-archive--list {
-        @include card-style;
+        @include mixins.card-style;
     }
 
     .archives-year {

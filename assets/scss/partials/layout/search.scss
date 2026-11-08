@@ -1,3 +1,5 @@
+@use "../../breakpoints" as bp;
+@use "../../mixins";
 .search-form {
     position: relative;
     --button-size: 80px;
@@ -31,7 +33,7 @@
 
     input {
         padding: 40px 20px 20px;
-        @include card-style;
+        @include mixins.card-style;
         color: var(--card-text-color-main);
         width: 100%;
         border: 0;

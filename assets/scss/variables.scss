@@ -1,10 +1,14 @@
+@use "breakpoints" as bp;
+@use "mixins";
+@use "partials/highlight/light";
+@use "partials/highlight/dark";
 /*
 *   Global style
 */
 :root {
     --main-top-padding: 35px;
 
-    @include respond(xl) {
+    @include bp.respond(xl) {
         --main-top-padding: 50px;
     }
 
@@ -55,17 +59,17 @@
 
     --card-padding: 20px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --card-padding: 25px;
     }
 
-    @include respond(xl) {
+    @include bp.respond(xl) {
         --card-padding: 30px;
     }
 
     --small-card-padding: 25px 20px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --small-card-padding: 25px;
     }
 
@@ -86,7 +90,7 @@
     --article-font-family: var(--base-font-family);
     --article-font-size: 1.6rem;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --article-font-size: 1.7rem;
     }
 
@@ -153,20 +157,22 @@
 [data-scheme="light"] {
     --pre-text-color: #272822;
     --pre-background-color: #fafafa;
-    @import "partials/highlight/light.scss";
+
+    @include light.styles;
 }
 
 [data-scheme="dark"] {
     --pre-text-color: #f8f8f2;
     --pre-background-color: #272822;
-    @import "partials/highlight/dark.scss";
+
+    @include dark.styles;
 }
 
 :root {
     --menu-icon-separation: 40px;
     --container-padding: 15px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --container-padding: 20px;
     }
 
@@ -184,11 +190,11 @@
     /* Article image height variables */
     --article-image-height: 150px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --article-image-height: 200px;
     }
 
-    @include respond(xl) {
+    @include bp.respond(xl) {
         --article-image-height: 250px;
     }
 
@@ -211,7 +217,7 @@
     /* Article compact image size */
     --article-compact-image-size: 50px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         --article-compact-image-size: 60px;
     }
 

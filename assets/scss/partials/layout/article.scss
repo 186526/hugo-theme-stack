@@ -1,8 +1,10 @@
+@use "../../breakpoints" as bp;
+@use "../../mixins";
 .article-page {
     &.hide-sidebar-sm .left-sidebar {
         display: none;
 
-        @include respond(md) {
+        @include bp.respond(md) {
             display: inherit;
         }
     }
@@ -146,7 +148,7 @@
     padding: 0 var(--card-padding);
     margin-top: var(--spacing-lg);
 
-    @include respond(lg) {
+    @include bp.respond(lg) {
         display: none;
     }
 

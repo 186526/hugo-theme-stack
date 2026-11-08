@@ -1,6 +1,8 @@
+@use "../breakpoints" as bp;
+@use "../mixins";
 .sidebar {
     &.sticky {
-        @include respond(md) {
+        @include bp.respond(md) {
             position: sticky;
         }
     }
@@ -12,20 +14,20 @@
     flex-shrink: 0;
     align-self: stretch;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         gap: var(--sidebar-element-separation);
     }
 
     margin-bottom: calc(-1 * var(--sidebar-element-separation));
 
-    @include respond(md) {
+    @include bp.respond(md) {
         margin-bottom: 0;
     }
 
     &> :not(:last-child) {
         margin-bottom: var(--sidebar-element-separation);
 
-        @include respond(md) {
+        @include bp.respond(md) {
             margin-bottom: 0;
         }
     }
@@ -39,14 +41,14 @@
     --emoji-size: 40px;
     --emoji-font-size: 20px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         width: auto;
         padding-top: var(--main-top-padding);
         padding-bottom: var(--main-top-padding);
         max-height: 100vh;
     }
 
-    @include respond(2xl) {
+    @include bp.respond(2xl) {
         --sidebar-avatar-size: 120px;
         --sidebar-element-separation: var(--spacing-xl);
         --emoji-size: 40px;
@@ -62,7 +64,7 @@
         --emoji-font-size: 15px;
 
         header {
-            @include respond(lg) {
+            @include bp.respond(lg) {
                 flex-direction: row;
             }
 
@@ -73,7 +75,7 @@
             .site-name {
                 font-size: 1.4rem;
 
-                @include respond(2xl) {
+                @include bp.respond(2xl) {
                     font-size: 1.75rem;
                 }
             }
@@ -95,7 +97,7 @@
         top: 0;
     }
 
-    @include respond(lg) {
+    @include bp.respond(lg) {
         padding-top: var(--main-top-padding);
         padding-bottom: var(--main-top-padding);
     }
@@ -108,7 +110,7 @@
     flex-direction: column;
     gap: var(--sidebar-element-separation);
 
-    @include respond(md) {
+    @include bp.respond(md) {
         padding: 0;
     }
 
@@ -153,7 +155,7 @@
         margin: 0;
         font-size: 1.6rem;
 
-        @include respond(2xl) {
+        @include bp.respond(2xl) {
             font-size: 1.8rem;
         }
     }
@@ -164,7 +166,7 @@
         margin: 0;
         font-size: 1.4rem;
 
-        @include respond(2xl) {
+        @include bp.respond(2xl) {
             font-size: 1.6rem;
         }
     }

@@ -1,5 +1,7 @@
+@use "../../breakpoints" as bp;
+@use "../../mixins";
 .section-card {
-    @include card-style;
+    @include mixins.card-style;
     padding: var(--small-card-padding);
     display: flex;
     align-items: center;

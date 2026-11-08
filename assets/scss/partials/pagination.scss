@@ -1,13 +1,15 @@
+@use "../breakpoints" as bp;
+@use "../mixins";
 .pagination {
     display: flex;
-    @include card-style;
+    @include mixins.card-style;
     overflow: hidden;
 
     .hide-on-mobile,
     .pagination-link {
         display: none;
 
-        @include respond(md) {
+        @include bp.respond(md) {
             display: flex;
         }
     }
@@ -27,7 +29,7 @@
         color: var(--card-text-color-secondary);
         text-decoration: none;
 
-        @include respond(md) {
+        @include bp.respond(md) {
             min-width: 48px;
             padding: var(--spacing-md) 0;
         }
@@ -37,7 +39,7 @@
             flex: 0 0 var(--spacing-3xl);
             padding: var(--spacing-sm);
 
-            @include respond(md) {
+            @include bp.respond(md) {
                 flex: 0 0 48px;
                 padding: var(--spacing-md);
             }
@@ -75,7 +77,7 @@
 
 #pagination-jump-dialog {
     border: none;
-    @include card-style;
+    @include mixins.card-style;
     box-shadow: var(--shadow-l2);
     color: var(--body-text-color);
     margin: auto; // Center dialog

@@ -1,11 +1,11 @@
-@import "../../breakpoints";
-@import "../../mixins";
+@use "../../breakpoints" as bp;
+@use "../../mixins";
 
 .artalk-container {
-    @include card-style;
+    @include mixins.card-style;
     padding: 5px;
 
-    @include respond(md) {
+    @include bp.respond(md) {
         padding: var(--card-padding);
     }
 }
